@@ -28,7 +28,7 @@ export default function Footer() {
       {windowWidth > 1280 ? (
         <footer
           //  desktop's footer
-          className="flex items-center justify-center h-24 py-5 text-xs text-gray-200 bg-gray-900"
+          className="flex items-center justify-center w-full h-24 py-5 text-xs text-gray-200 bg-gray-900"
           style={{ color: "#D3D3D3" }}
         >
           <div className="flex mx-10" style={{ marginRight: "5vh" }}>

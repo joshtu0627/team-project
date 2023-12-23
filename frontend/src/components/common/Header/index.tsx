@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
 import { RxCross1 } from "react-icons/rx";
 import { Link } from "react-router-dom";
+
 import useWindowWidth from "../../../hooks/useWindowWidth";
+import { useUser } from "../../../contexts/UserContext.tsx";
 
 import "./index.css";
 
 export default function Header() {
+  const { user, login, logout } = useUser();
+
   const [isMemberHover, setIsMemberHover] = useState(false);
   const [isCartHover, setIsCartHover] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
@@ -99,22 +103,39 @@ export default function Header() {
                   </div>
                 </Link>
               </div>
-
-              <div
-                onMouseEnter={() => setIsMemberHover(true)}
-                onMouseLeave={() => setIsMemberHover(false)}
-                className="flex items-center mx-3"
-              >
-                <img
-                  src={
-                    isMemberHover
-                      ? "/assets/images/icon-images/member-hover.png"
-                      : "/assets/images/icon-images/member.png"
-                  }
-                  className="object-cover object-center icon-size"
-                  alt=""
-                />
-              </div>
+              {user ? (
+                <div className="flex items-center mx-3">
+                  <Link to={"/profile"}>
+                    <img
+                      src={
+                        user.picture
+                          ? user.picture
+                          : "https://i.imgur.com/6VBx3io.png"
+                      }
+                      className="object-cover object-center rounded-full icon-size"
+                      alt=""
+                    />
+                  </Link>
+                </div>
+              ) : (
+                <div
+                  onMouseEnter={() => setIsMemberHover(true)}
+                  onMouseLeave={() => setIsMemberHover(false)}
+                  className="flex items-center mx-3"
+                >
+                  <Link to={"/login"}>
+                    <img
+                      src={
+                        isMemberHover
+                          ? "/assets/images/icon-images/member-hover.png"
+                          : "/assets/images/icon-images/member.png"
+                      }
+                      className="object-cover object-center icon-size"
+                      alt=""
+                    />
+                  </Link>
+                </div>
+              )}
             </div>
           </header>
           <div className="z-50 flex items-center w-full h-8 text-sm text-white text-gray-400 bg-black cursor-pointer-bar"></div>

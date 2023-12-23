@@ -227,8 +227,7 @@ export default function CartPage() {
 
       console.log("data", data);
 
-      // fetch("https://13.236.23.10:3000/api/1.0/payment/pay-by-tappay", {
-      fetch(`${backendurl}/api/1.0/payment/pay-by-tappay`, {
+      fetch(`${backendurl}/api/1.0/order/checkout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
