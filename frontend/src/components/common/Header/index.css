@@ -1,0 +1,49 @@
+.animated-btn {
+  cursor: pointer;
+  position: relative;
+  padding: 10px 20px;
+  background: white;
+  transition: all 1s;
+}
+
+.animated-btn:after,
+.animated-btn:before {
+  content: " ";
+  width: 0px;
+  height: 0px;
+  position: absolute;
+  border: 0px solid #fff;
+  transition: all 1s;
+}
+
+.animated-btn:after {
+  top: 0px;
+  left: 0px;
+  border-top: 0px solid black;
+  border-left: 0px solid black;
+}
+
+.animated-btn:before {
+  bottom: 0px;
+  right: 0px;
+  border-bottom: 0px solid black;
+  border-right: 0px solid black;
+}
+
+.animated-btn:hover {
+  border-top-right-radius: 0px;
+  border-bottom-left-radius: 0px;
+}
+
+.animated-btn:hover:before {
+  border-bottom: 1px solid black;
+  border-right: 1px solid black;
+  width: 110%;
+  height: 110%;
+}
+.animated-btn:hover:after {
+  border-top: 1px solid black;
+  border-left: 1px solid black;
+  width: 110%;
+  height: 110%;
+}
