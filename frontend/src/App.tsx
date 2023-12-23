@@ -6,6 +6,11 @@ import ProfilePage from "./pages/ProfilePage";
 import ProductPage from "./pages/ProductPage";
 import SearchResultPage from "./pages/SearchResultPage";
 import ThankYouPage from "./pages/ThankYouPage";
+import Loginpage from "./pages/LoginPage";
+import Registerpage from "./pages/RegisterPage";
+
+import { UserProvider } from "./contexts/UserContext";
+import UserAuthInitializer from "./utils/UserAuthInitializer";
 import "./App.css";
 
 const queryClient = new QueryClient({
@@ -13,23 +18,28 @@ const queryClient = new QueryClient({
 });
 function App() {
   return (
-    <div className="flex flex-col min-h-screen">
-      {
-        <QueryClientProvider client={queryClient}>
-          <BrowserRouter>
-            <Routes>
-              <Route path="/search" element={<SearchResultPage />} />
-              <Route path="/" element={<HomePage />} />
-              <Route path="/:category" element={<HomePage />} />
-              <Route path="/cart" element={<CartPage />} />
-              <Route path="/profile" element={<ProfilePage />} />
-              <Route path="/products/:productId" element={<ProductPage />} />
-              <Route path="/thankyou" element={<ThankYouPage />} />
-            </Routes>
-          </BrowserRouter>
-        </QueryClientProvider>
-      }
-    </div>
+    <UserProvider>
+      <div className="flex flex-col min-h-screen">
+        {
+          <QueryClientProvider client={queryClient}>
+            <UserAuthInitializer />
+            <BrowserRouter>
+              <Routes>
+                <Route path="/search" element={<SearchResultPage />} />
+                <Route path="/" element={<HomePage />} />
+                <Route path="/:category" element={<HomePage />} />
+                <Route path="/cart" element={<CartPage />} />
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/products/:productId" element={<ProductPage />} />
+                <Route path="/thankyou" element={<ThankYouPage />} />
+                <Route path="/login" element={<Loginpage />} />
+                <Route path="/register" element={<Registerpage />} />
+              </Routes>
+            </BrowserRouter>
+          </QueryClientProvider>
+        }
+      </div>
+    </UserProvider>
   );
 }
 
