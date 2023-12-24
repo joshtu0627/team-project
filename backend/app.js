@@ -34,6 +34,8 @@ app.use('/api/' + API_VERSION, rateLimiterRoute, [
     require('./server/routes/marketing_route'),
     require('./server/routes/user_route'),
     require('./server/routes/order_route'),
+    // chiu
+    require('./server/routes/review_route'),
 ]);
 
 // Page not found
