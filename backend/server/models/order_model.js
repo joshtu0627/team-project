@@ -56,10 +56,19 @@ const getUserPaymentsGroupByDB = async () => {
     return orders;
 };
 
+// chiu
+const getPaidOrders = async (user_id) => {
+    const [orders] = await pool.query('SELECT * FROM order_table WHERE user_id = ? AND status = ?', [user_id, 0]);
+    return orders;
+}
+
 module.exports = {
     createOrder,
     createPayment,
     payOrderByPrime,
     getUserPayments,
     getUserPaymentsGroupByDB,
+
+    // chiu
+    getPaidOrders
 };

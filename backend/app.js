@@ -22,6 +22,11 @@ morganBody(app);
 // CORS allow all
 app.use(cors());
 
+// healthcheck
+app.get('/healthcheck', (req, res) => {
+    res.status(200).send('OK');
+})
+
 // API routes
 app.use('/api/' + API_VERSION, rateLimiterRoute, [
     require('./server/routes/admin_route'),

@@ -42,6 +42,13 @@ const checkout = async (req, res) => {
     res.send({ data: { number } });
 };
 
+// chiu
+const getPaidOrders = async (req, res) => {
+    const user_id = req.params.userId;
+    const orders = await Order.getPaidOrders(user_id);
+    res.status(200).send({ data: orders });
+}
+
 // For Load Testing
 const getUserPayments = async (req, res) => {
     const orders = await Order.getUserPayments();
@@ -71,4 +78,7 @@ module.exports = {
     checkout,
     getUserPayments,
     getUserPaymentsGroupByDB,
+
+    // chiu
+    getPaidOrders
 };
