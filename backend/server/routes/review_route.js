@@ -8,6 +8,7 @@ const {
     createReview,
     getReviewsByProductId,
     updateReviewEmoji,
+    softDeleteReview,
 } = require('../controllers/review_controller');
 
 router.route('/review/create')
@@ -18,5 +19,8 @@ router.route('/review/product/:productId')
 
 router.route('/review/emoji')
     .post(wrapAsync(updateReviewEmoji));
+
+router.route('/review/delete/:reviewId')
+    .delete(wrapAsync(softDeleteReview));
 
 module.exports = router;

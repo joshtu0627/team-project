@@ -69,8 +69,15 @@ const updateReviewEmoji = async (req, res) => {
     }
 }
 
+const softDeleteReview = async (req, res) => {
+    const review_id = req.params.reviewId;
+    const result = await Review.softDeleteReview(review_id);
+    res.status(200).send({ ok: true });
+}
+
 module.exports = {
     createReview,
     getReviewsByProductId,
     updateReviewEmoji,
+    softDeleteReview,
 };

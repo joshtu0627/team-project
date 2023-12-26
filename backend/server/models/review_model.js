@@ -52,6 +52,11 @@ const updateReviewEmoji = async (review_id, user_id, emoji) => {
     return result;
 };
 
+const softDeleteReview = async (review_id) => {
+    const [result] = await pool.query('UPDATE review SET deleted = ? WHERE id = ?', [1, review_id]);
+    return result;
+}
+
 module.exports = {
     createReview,
     getReviewsByProductId,
@@ -60,4 +65,5 @@ module.exports = {
     createReviewEmoji,
     updateReviewEmoji,
     getReviewById,
+    softDeleteReview,
 };
