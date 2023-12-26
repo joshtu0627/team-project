@@ -17,7 +17,7 @@ app.set('json spaces', 2);
 app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-morganBody(app);
+// morganBody(app);
 
 // CORS allow all
 app.use(cors());
@@ -29,6 +29,7 @@ app.use('/api/' + API_VERSION, rateLimiterRoute, [
     require('./server/routes/marketing_route'),
     require('./server/routes/user_route'),
     require('./server/routes/order_route'),
+    require('./server/routes/message_route'),
 ]);
 
 // Page not found

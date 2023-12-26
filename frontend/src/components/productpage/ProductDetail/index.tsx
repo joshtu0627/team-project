@@ -2,8 +2,15 @@ import React, { useState, useEffect } from "react";
 
 import Product from "../../../types/Product";
 import useWindowWidth from "../../../hooks/useWindowWidth";
+import { useUser } from "../../../contexts/UserContext";
+
+import { backendurl } from "../../../constants/urls";
+
+import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
 
 export default function ProductDetail({ product }: { product: Product }) {
+  const { user } = useUser();
+
   const [amount, setAmount] = useState(0);
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedColorCode, setSelectedColorCode] = useState("");
@@ -106,8 +113,41 @@ export default function ProductDetail({ product }: { product: Product }) {
                     <img src={product.main_image} className="w-full" alt="" />
                   </div>
                   <div className="w-2/5 p-5 ">
-                    <div className="mb-2 text-xl font-bold">
-                      {product.title}
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="text-xl font-bold ">{product.title}</div>
+                      <button className="flex items-center px-2 py-1 border-2 border-gray-400 rounded-lg">
+                        <IoChatbubbleEllipsesSharp />
+
+                        <div
+                          className="ml-1"
+                          onClick={() => {
+                            const payload = {
+                              room: {
+                                room_name: product.title,
+                                image: product.main_image,
+                                product_id: product.id,
+                                type: "product",
+                                user_id: user?.id,
+                              },
+                            };
+                            console.log("payload", payload);
+
+                            fetch(`${backendurl}/api/1.0/message/room`, {
+                              method: "POST",
+                              headers: {
+                                "Content-Type": "application/json",
+                              },
+                              body: JSON.stringify(payload),
+                            })
+                              .then((res) => res.json())
+                              .then((res) => {
+                                console.log("res", res);
+                              });
+                          }}
+                        >
+                          聯絡客服
+                        </div>
+                      </button>
                     </div>
                     <div className="text-sm text-gray-500">{product.id}</div>
                     <div className="my-3 text-xl font-bold">
