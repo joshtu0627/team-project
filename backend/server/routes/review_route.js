@@ -5,10 +5,14 @@ const {
 } = require('../../util/util');
 
 const {
-    createReview
+    createReview,
+    getReviewsByProductId,
 } = require('../controllers/review_controller');
 
 router.route('/review/create')
     .post(wrapAsync(createReview));
+
+router.route('/review/product/:productId')
+    .get(wrapAsync(getReviewsByProductId));
 
 module.exports = router;
