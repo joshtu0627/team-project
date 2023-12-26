@@ -24,7 +24,7 @@ const getReviewsByProductId = async (req, res) => {
     let data = [];
     for (let review of reviews) {
         const emojiCount = await Review.countEmojiByReviewId(review.id);
-        const userEmoji = await Review.getUserEmojiByReviewId(review.id, 1);
+        const userEmoji = await Review.getUserEmojiByReviewId(review.id, req.user.id);
 
         const like = emojiCount.find(entry => entry.emoji === 'like')?.emoji_count || 0;
         const excited = emojiCount.find(entry => entry.emoji === 'excited')?.emoji_count || 0;
@@ -41,14 +41,36 @@ const getReviewsByProductId = async (req, res) => {
             dislike,
             angry,
             heartbroken,
-            emoji: userEmoji.emoji
+            emoji: userEmoji?.emoji || null,
         };
         data.push(result);
     }
     res.status(200).send({ data });
 };
 
+const updateReviewEmoji = async (req, res) => {
+    const { review_id, emoji } = req.body;
+    const user_id = req.user.id;
+    // const user_id = 10051
+
+    const userEmoji = await Review.getUserEmojiByReviewId(review_id, user_id);
+
+    let update
+    if (userEmoji === undefined) {
+        update = await Review.createReviewEmoji({ review_id, user_id, emoji });
+        return res.status(200).send({
+            id: update,
+            review_id,
+            emoji,
+        });
+    } else {
+        update = await Review.updateReviewEmoji(review_id, user_id, emoji);
+        return res.status(200).send({ ok: true })
+    }
+}
+
 module.exports = {
     createReview,
     getReviewsByProductId,
+    updateReviewEmoji,
 };

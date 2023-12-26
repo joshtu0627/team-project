@@ -20,6 +20,11 @@ const countEmojiByReviewId = async (review_id) => {
     `;
     const [result] = await pool.query(query, [review_id, 0]);
     return result;
+};
+
+const getReviewById = async (review_id) => {
+    const [result] = await pool.query('SELECT * FROM review WHERE id = ?', [review_id]);
+    return result[0];
 }
 
 const getUserEmojiByReviewId = async (review_id, user_id) => {
@@ -29,13 +34,30 @@ const getUserEmojiByReviewId = async (review_id, user_id) => {
         WHERE review_id = ? AND user_id = ?
     `;
     const [result] = await pool.query(query, [review_id, user_id]);
-    if (result.length === 0) return null;
     return result[0];
-}
+};
+
+const createReviewEmoji = async (emoji) => {
+    const [result] = await pool.query('INSERT INTO review_emoji SET ?', emoji);
+    return result.insertId;
+};
+
+const updateReviewEmoji = async (review_id, user_id, emoji) => {
+    const query = `
+        UPDATE review_emoji
+        SET emoji = ?
+        WHERE review_id = ? AND user_id = ?
+    `;
+    const [result] = await pool.query(query, [emoji, review_id, user_id]);
+    return result;
+};
 
 module.exports = {
     createReview,
     getReviewsByProductId,
     countEmojiByReviewId,
     getUserEmojiByReviewId,
+    createReviewEmoji,
+    updateReviewEmoji,
+    getReviewById,
 };
