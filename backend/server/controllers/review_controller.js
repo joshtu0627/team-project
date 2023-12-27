@@ -21,10 +21,13 @@ const createReview = async (req, res) => {
 const getReviewsByProductId = async (req, res) => {
     const product_id = req.params.productId;
     const reviews = await Review.getReviewsByProductId(product_id);
+    // const user_id = req.user.id ? req.user.id : null;
+    // for test
+    const user_id = null;
     let data = [];
     for (let review of reviews) {
         const emojiCount = await Review.countEmojiByReviewId(review.id);
-        const userEmoji = await Review.getUserEmojiByReviewId(review.id, req.user.id);
+        const userEmoji = await Review.getUserEmojiByReviewId(review.id, user_id);
 
         const like = emojiCount.find(entry => entry.emoji === 'like')?.emoji_count || 0;
         const excited = emojiCount.find(entry => entry.emoji === 'excited')?.emoji_count || 0;
@@ -34,7 +37,7 @@ const getReviewsByProductId = async (req, res) => {
         const heartbroken = emojiCount.find(entry => entry.emoji === 'heartbroken')?.emoji_count || 0;
         
         const result = {
-            review,
+            ...review,
             like,
             excited,
             love,

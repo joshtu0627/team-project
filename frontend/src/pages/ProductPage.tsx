@@ -4,6 +4,8 @@ import { useParams } from "react-router-dom";
 import Header from "../components/common/Header";
 import Footer from "../components/common/Footer";
 
+// chiu
+import ReviewSection from "../components/productpage/ReviewSection";
 import ProductDetail from "../components/productpage/ProductDetail";
 import Product from "../types/Product";
 
@@ -29,6 +31,7 @@ export default function ProductPage() {
       <Header />
       {product.id}
       <ProductDetail product={product} />
+      <ReviewSection product_id={Number(productId)}/>
       <Footer />
     </div>
   );
