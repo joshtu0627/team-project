@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 
+import MessageBox from "../../common/MessageBox";
+
 import Product from "../../../types/Product";
 import useWindowWidth from "../../../hooks/useWindowWidth";
 import { useUser } from "../../../contexts/UserContext";
@@ -17,6 +19,9 @@ export default function ProductDetail({ product }: { product: Product }) {
   const [selectedSize, setSelectedSize] = useState("");
   const [sizeRemain, setSizeRemain] = useState<string[]>([]);
   const [amountRemain, setAmountRemain] = useState(-1);
+
+  const [messageOpen, setMessageOpen] = useState(false);
+  const [messageCurrentRoom, setMessageCurrentRoom] = useState(-1);
 
   const storage = window.localStorage;
   const windowWidth = useWindowWidth();
@@ -142,6 +147,8 @@ export default function ProductDetail({ product }: { product: Product }) {
                               .then((res) => res.json())
                               .then((res) => {
                                 console.log("res", res);
+                                setMessageOpen(true);
+                                setMessageCurrentRoom(res.roomId);
                               });
                           }}
                         >
@@ -503,6 +510,10 @@ export default function ProductDetail({ product }: { product: Product }) {
           )}
         </>
       )}
+      <MessageBox
+        messageOpen={messageOpen}
+        messageCurrentRoom={messageCurrentRoom}
+      />
     </>
   );
 }

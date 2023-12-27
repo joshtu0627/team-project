@@ -8,12 +8,19 @@ import { socketurl, backendurl } from "../../../constants/urls";
 import { IoMdSend } from "react-icons/io";
 import { CiImageOn } from "react-icons/ci";
 import { BsEmojiSmile } from "react-icons/bs";
+import { IoChatbox } from "react-icons/io5";
 
 import Button from "@mui/material/Button";
 
 import { generateTimestamp, getTimeDiff } from "../../../utils/tools";
 
-export default function MessageBox() {
+export default function MessageBox({
+  messageOpen,
+  messageCurrentRoom,
+}: {
+  messageOpen: boolean;
+  messageCurrentRoom: number;
+}) {
   const scrollRef = useRef(null);
   const sendButtonRef = useRef(null);
 
@@ -25,7 +32,8 @@ export default function MessageBox() {
   const [messages, setMessages] = useState({});
   const [rooms, setRooms] = useState([]);
 
-  const [currentRoom, setCurrentRoom] = useState(null);
+  const [currentRoom, setCurrentRoom] = useState(0);
+  const [currentRoomName, setCurrentRoomName] = useState(null);
 
   const [update, setUpdate] = useState(false);
 
@@ -49,6 +57,7 @@ export default function MessageBox() {
 
   const handleGetMessage = (message: string) => {
     message = JSON.parse(message);
+    message.id = Math.floor(Math.random() * 100000);
     console.log("123123");
 
     console.log(messages);
@@ -69,6 +78,38 @@ export default function MessageBox() {
   };
 
   useEffect(() => {
+    if (!messageCurrentRoom || messageCurrentRoom == -1) return;
+    fetch(`${backendurl}/api/1.0/message/rooms/${user.id}`, {
+      method: "GET",
+      // headers: {
+      //   Authorization: `Bearer ${storage.getItem("token")}`,
+      // },
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        console.log(data);
+        if (!data) return;
+        console.log("in");
+
+        for (let i = 0; i < data.rooms.length; i++) {
+          const maxLen = 5;
+          if (data.rooms[i].room_name.length > maxLen) {
+            data.rooms[i].sliced_room_name =
+              data.rooms[i].room_name.slice(0, maxLen) + "...";
+          }
+        }
+        setRooms(data.rooms);
+        setUpdate(!update);
+      });
+    setCurrentRoom(messageCurrentRoom);
+  }, [messageCurrentRoom]);
+
+  useEffect(() => {
+    if (!messageOpen) return;
+    if (!active) setActive(true);
+  }, [messageOpen]);
+
+  useEffect(() => {
     if (!user) return;
     console.log(user);
 
@@ -85,9 +126,9 @@ export default function MessageBox() {
         console.log("in");
 
         for (let i = 0; i < data.rooms.length; i++) {
-          const maxLen = 7;
+          const maxLen = 5;
           if (data.rooms[i].room_name.length > maxLen) {
-            data.rooms[i].room_name =
+            data.rooms[i].sliced_room_name =
               data.rooms[i].room_name.slice(0, maxLen) + "...";
           }
         }
@@ -122,6 +163,7 @@ export default function MessageBox() {
   }, [currentRoom]);
 
   useEffect(() => {
+    if (messageCurrentRoom > 0) return;
     if (!rooms || rooms.length === 0) return;
     setCurrentRoom(rooms[0].id);
     changeRoom(rooms[0].id);
@@ -164,15 +206,20 @@ export default function MessageBox() {
       {active ? (
         <div className="fixed flex flex-col w-1/3 bg-gray-200 rounded-lg bottom-6 right-3 shadow-3xl h-1/2">
           <div
-            className="w-full text-3xl cursor-pointer h-1/6"
+            className="w-full  cursor-pointer h-1/6"
             onClick={() => {
               setActive(!active);
             }}
           >
-            <div className="p-5">客服</div>
+            <div className=" p-5 flex justify-between">
+              <div className="text-3xl">客服</div>
+              <div className="flex items-end">
+                <div className="text-m">{currentRoomName}</div>
+              </div>
+            </div>
           </div>
           <div className="flex w-full h-5/6 rounded-xl">
-            <div className="flex-col w-1/3">
+            <div className="flex-col w-1/3 overflow-y-scroll">
               {rooms &&
                 rooms.map((room) => (
                   <div key={room.id}>
@@ -183,6 +230,7 @@ export default function MessageBox() {
                       }
                       onClick={() => {
                         setCurrentRoom(room.id);
+                        setCurrentRoomName(room.room_name);
                       }}
                     >
                       <div className="w-12 h-12">
@@ -192,7 +240,7 @@ export default function MessageBox() {
                         ></img>
                       </div>
                       <div className="flex flex-col ml-3">
-                        <div className="text-l">{room.room_name}</div>
+                        <div className="text-l">{room.sliced_room_name}</div>
                         {/* <div></div> */}
                       </div>
                     </div>
@@ -253,7 +301,9 @@ export default function MessageBox() {
                 )}
               </div>
               <div className="flex flex-col border-t-2 border-gray-400 h-1/6">
-                <div className="flex">
+                <div className="flex items-center">
+                  <CiImageOn className="w-8 h-8 ml-2" />
+                  <BsEmojiSmile className="w-6 h-6 ml-2" />
                   <input
                     type="text"
                     value={userMessage}
@@ -265,7 +315,7 @@ export default function MessageBox() {
                         sendButtonRef.current.click();
                       }
                     }}
-                    className="w-full h-12 px-2 rounded-l outline-none"
+                    className="w-full px-2 rounded-l outline-none"
                     placeholder="輸入訊息"
                   />
                   <button
@@ -274,7 +324,6 @@ export default function MessageBox() {
                       console.log(user);
 
                       let payload = {
-                        id: Math.floor(Math.random() * 100000),
                         sender_id: user.id,
                         room_id: currentRoom,
                         message_content: userMessage,
@@ -290,22 +339,29 @@ export default function MessageBox() {
                     <IoMdSend className="w-6 h-6" />
                   </button>
                 </div>
-                <div className="flex items-center ml-2">
+                {/* <div className="flex items-center h-1/3 ml-2">
                   <CiImageOn className="w-8 h-8" />
                   <BsEmojiSmile className="w-6 h-6 ml-2" />
-                </div>
+                </div> */}
               </div>
             </div>
           </div>
         </div>
       ) : (
         <div
-          className="fixed bottom-0 right-0 p-4 m-4 bg-gray-200 rounded-lg shadow-md cursor-pointer w-80"
+          className={`fixed flex items-center justify-center p-4 m-4 rounded-lg shadow-md cursor-pointer ${
+            active
+              ? "bg-red-200 scale-125 top-0 left-0"
+              : "bg-gray-200 w-36 text-2xl bottom-0 right-0"
+          }`}
           onClick={() => {
             setActive(!active);
           }}
         >
-          客服
+          <div>
+            <IoChatbox className="h-6 mr-2 w-6" />
+          </div>
+          <div>客服</div>
         </div>
       )}
     </>

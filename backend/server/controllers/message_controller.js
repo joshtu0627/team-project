@@ -1,4 +1,5 @@
 const Message = require('../models/message_model');
+const User = require('../models/user_model');
 
 const createMessage = async (req, res) => {
     let { message } = req.body;
@@ -37,6 +38,18 @@ const getMessagesByRoomId = async (req, res) => {
 
 const getRoomsByUserId = async (req, res) => {
     const userId = req.params.userId;
+
+    const user = await User.getUserDetailById(userId);
+
+    if (user.role_id == 1) {
+        const rooms = await Message.getAllRooms();
+        if (rooms == -1) {
+            res.status(500);
+        } else {
+            res.status(200).send({ rooms });
+        }
+        return;
+    }
 
     const rooms = await Message.getRoomsByUserId(userId);
     if (rooms == -1) {

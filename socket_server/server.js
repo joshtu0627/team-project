@@ -40,7 +40,16 @@ io.on("connection", (socket) => {
     //回傳 message 給發送訊息的 Client
     io.sockets.in(nowRoom).emit("getMessageRoomReceive", message);
 
-    delete message.id;
+    // message = {
+    //   sender_id: message.sender_id,
+    //   room_id: message.room_id,
+    //   message_content: message.message_content,
+    //   image: message.image,
+    //   timestamp: message.timestamp,
+    // };
+
+    // message = JSON.stringify(message);
+    console.log(typeof message);
     fetch(`${process.env.BACKENDURL}/api/1.0/message`, {
       method: "POST",
       headers: {

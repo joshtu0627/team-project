@@ -21,9 +21,15 @@ const getRoomsByUserId = async (userId) => {
     return rooms;
 };
 
+const getAllRooms = async () => {
+    const [rooms] = await pool.query('SELECT * FROM rooms');
+    return rooms;
+};
+
 module.exports = {
     createMessage,
     createRoom,
     getMessagesByRoomId,
     getRoomsByUserId,
+    getAllRooms,
 };

@@ -66,13 +66,17 @@ const nativeSignIn = async (email, password) => {
     const conn = await pool.getConnection();
     try {
         await conn.query('START TRANSACTION');
-
+        console.log('-1');
         const [users] = await conn.query('SELECT * FROM user WHERE email = ?', [email]);
         const user = users[0];
+        console.log(user);
+        console.log(password);
         if (!bcrypt.compareSync(password, user.password)) {
             await conn.query('COMMIT');
+            console.log('wrong');
             return { error: 'Password is wrong' };
         }
+        console.log('0');
 
         const loginAt = new Date();
         const accessToken = jwt.sign(
@@ -87,13 +91,18 @@ const nativeSignIn = async (email, password) => {
         );
 
         const queryStr = 'UPDATE user SET access_token = ?, access_expired = ?, login_at = ? WHERE id = ?';
+        console.log('1');
         await conn.query(queryStr, [accessToken, TOKEN_EXPIRE, loginAt, user.id]);
-
+        console.log('2');
         await conn.query('COMMIT');
+        console.log('3');
 
         user.access_token = accessToken;
         user.login_at = loginAt;
         user.access_expired = TOKEN_EXPIRE;
+
+        console.log('aaaa');
+        console.log(accessToken);
 
         return { user };
     } catch (error) {
@@ -169,6 +178,15 @@ const getUserDetail = async (email, roleId) => {
     }
 };
 
+const getUserDetailById = async (id) => {
+    try {
+        const [users] = await pool.query('SELECT * FROM user WHERE id = ?', [id]);
+        return users[0];
+    } catch (e) {
+        return null;
+    }
+};
+
 const getFacebookProfile = async function (accessToken) {
     try {
         let res = await got('https://graph.facebook.com/me?fields=id,name,email&access_token=' + accessToken, {
@@ -187,5 +205,6 @@ module.exports = {
     nativeSignIn,
     facebookSignIn,
     getUserDetail,
+    getUserDetailById,
     getFacebookProfile,
 };
