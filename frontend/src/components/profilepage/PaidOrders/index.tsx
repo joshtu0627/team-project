@@ -30,6 +30,7 @@ export default function PaidOrders () {
             const res = await axios.get(`${backendurl}/api/1.0/order/user/${1}`);
             setOrders(res.data.data);
         }
+
         fetchOrders();
     }, []);
 
@@ -41,14 +42,17 @@ export default function PaidOrders () {
                         <p>訂單編號：{id}</p>
                         {details.list.map(({ id, qty, size, color, price }) => {
                             return (
-                                <PaidProduct 
-                                    key={id}
-                                    name={`test`}
-                                    color={color.name}
-                                    size={size}
-                                    qty={qty}
-                                    price={price}
-                                />
+                                <>
+                                    <PaidProduct 
+                                        key={id}
+                                        id={id}
+                                        name={`test`}
+                                        color={color.name}
+                                        size={size}
+                                        qty={qty}
+                                        price={price}
+                                    />
+                                </>
                             )
                         })}
                         <Divider variant="middle"/>

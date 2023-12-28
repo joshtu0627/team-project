@@ -1,7 +1,9 @@
 import { Button } from "@mui/material";
 import Divider from '@mui/material/Divider';
+import { backendurl } from "../../../constants/urls";
 
 interface PaidProductProps {
+    id: number;
     name: string;
     color: string;
     size: string;
@@ -11,6 +13,7 @@ interface PaidProductProps {
 
 const PaidProduct: React.FC<PaidProductProps> = (props) => {
     const {
+        id,
         name,
         color,
         size,
@@ -20,6 +23,11 @@ const PaidProduct: React.FC<PaidProductProps> = (props) => {
     return (
         <>
             <Divider variant="middle"/>
+            <img
+                className="flex flex-row"
+                src={`${backendurl}/assets/${id}/main.jpg`}
+                alt={name}
+            />
             <div className="flex flex-row">
                 <div className="flex flex-col">
                     <span>商品名稱：{name}</span>
