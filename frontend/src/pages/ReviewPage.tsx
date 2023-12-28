@@ -1,11 +1,11 @@
 import React, { useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import StarRating from "../components/profilepage/StarRating";
-import StyleSelect from "../components/profilepage/StyleSelect";
-import SizeReviewSelect from "../components/profilepage/SizeReviewSelect";
-import ReviewTextField from "../components/profilepage/ReviewTextField";
-import HeightInputField from "../components/profilepage/HeightInputField";
-import WeightInputField from "../components/profilepage/WeightInputField";
+import StarRating from "../components/reviewpage/StarRating";
+import StyleSelect from "../components/reviewpage/StyleSelect";
+import SizeReviewSelect from "../components/reviewpage/SizeReviewSelect";
+import ReviewTextField from "../components/reviewpage/ReviewTextField";
+import HeightInputField from "../components/reviewpage/HeightInputField";
+import WeightInputField from "../components/reviewpage/WeightInputField";
 import { Button } from "@mui/material";
 
 export default function ReviewPage () {

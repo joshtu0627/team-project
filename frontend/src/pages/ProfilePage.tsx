@@ -7,6 +7,7 @@ import Footer from "../components/common/Footer";
 import { useUser } from "../contexts/UserContext";
 
 import Button from "@mui/material/Button";
+import PaidOrders from "../components/profilepage/PaidOrders";
 
 export default function ProfilePage() {
   const { user, login, logout } = useUser();
@@ -28,6 +29,7 @@ export default function ProfilePage() {
         >
           logout
         </Button>
+        <PaidOrders />
       </div>
       <Footer />
     </div>
