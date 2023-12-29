@@ -2,8 +2,11 @@ const Message = require('../models/message_model');
 const User = require('../models/user_model');
 
 const createMessage = async (req, res) => {
+    console.log('aaaaaaaaaaaaaaaaaaaa');
+    console.log(req.body);
     let { message } = req.body;
-    message = JSON.parse(message);
+    console.log(message);
+    // message = JSON.parse(message);
     const messageId = await Message.createMessage(message);
     if (messageId == -1) {
         res.status(500);

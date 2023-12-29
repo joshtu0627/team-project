@@ -99,7 +99,7 @@ export default function MessageBox({
   };
 
   const handleGetMessage = (message: string) => {
-    message = JSON.parse(message);
+    // message = JSON.parse(message);
     message.id = Math.floor(Math.random() * 100000);
     console.log("123123");
 

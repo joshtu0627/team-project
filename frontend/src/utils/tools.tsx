@@ -17,8 +17,6 @@ export function getTimeDiff(timestamp) {
   const now = new Date();
   const timeDiff = now - timestamp;
 
-  console.log(timeDiff);
-
   const minuteDiff = Math.floor(timeDiff / 1000 / 60);
   const hourDiff = Math.floor(minuteDiff / 60);
   const dayDiff = Math.floor(hourDiff / 24);

@@ -2,6 +2,7 @@ const { pool } = require('./mysqlcon');
 
 const createMessage = async (message) => {
     console.log(message);
+    delete message.nowRoom;
     const [result] = await pool.query('INSERT INTO message SET ?', message);
     return result.insertId;
 };
