@@ -25,6 +25,10 @@ amqp.connect("amqp://localhost", function (error0, connection) {
       throw error1;
     }
 
+    channel.assertQueue("message", {
+      durable: false,
+    });
+
     channel.consume(
       "message",
       function (msg) {

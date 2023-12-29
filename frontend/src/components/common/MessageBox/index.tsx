@@ -15,6 +15,7 @@ import { RxCross1 } from "react-icons/rx";
 import Button from "@mui/material/Button";
 
 import { generateTimestamp, getTimeDiff } from "../../../utils/tools";
+import ImageDetailDialog from "./dialogs/ImageDetailDialog";
 
 export default function MessageBox({
   messageOpen,
@@ -42,8 +43,15 @@ export default function MessageBox({
 
   const [userMessage, setUserMessage] = useState("");
   const [image, setImage] = useState(null);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const [update, setUpdate] = useState(false);
+
+  const [openImageDialog, setOpenImageDialog] = useState(false);
+
+  const handleCloseImageDialog = () => {
+    setOpenImageDialog(false);
+  };
 
   const handleUploadImageButtonClick = () => {
     imageInputRef.current.click();
@@ -52,6 +60,8 @@ export default function MessageBox({
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     const reader = new FileReader();
+    console.log("change");
+
     reader.onloadend = () => {
       setImage(reader.result);
     };
@@ -314,7 +324,7 @@ export default function MessageBox({
             <div className="w-2/3 h-full bg-white">
               <div
                 className={
-                  "overflow-y-scroll h-5/6" + (image ? " h-4/6" : " h-5/6")
+                  "overflow-y-scroll h-5/6" + (image ? " h-3/6" : " h-5/6")
                 }
                 ref={scrollRef}
               >
@@ -356,8 +366,12 @@ export default function MessageBox({
                           {message.message_image && (
                             <div className="overflow-hidden max-h-[200px] max-w-[200px] rounded-xl mb-1">
                               <img
-                                className="object-cover w-full h-full"
+                                className="object-cover w-full h-full cursor-pointer"
                                 src={message.message_image}
+                                onClick={() => {
+                                  setSelectedImage(message.message_image);
+                                  setOpenImageDialog(true);
+                                }}
                               ></img>
                             </div>
                           )}
@@ -514,6 +528,11 @@ export default function MessageBox({
         style={{ display: "none" }}
         onChange={handleImageChange}
         accept="image/*"
+      />
+      <ImageDetailDialog
+        open={openImageDialog}
+        handleClose={handleCloseImageDialog}
+        image={selectedImage}
       />
     </>
   );
