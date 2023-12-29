@@ -72,6 +72,11 @@ export default function MessageBox({
     const formData = new FormData();
     formData.append("image", imageInputRef.current.files[0]);
 
+    console.log("1231232322332");
+
+    console.log(typeof imageInputRef.current.files[0]);
+    console.log(imageInputRef.current.files[0]);
+
     let res = await fetch(`${backendurl}/api/1.0/message/uploadImage`, {
       method: "POST",
       body: formData,
@@ -324,7 +329,7 @@ export default function MessageBox({
             <div className="w-2/3 h-full bg-white">
               <div
                 className={
-                  "overflow-y-scroll h-5/6" + (image ? " h-3/6" : " h-5/6")
+                  "overflow-y-scroll h-5/6" + (image ? " h-4/6" : " h-5/6")
                 }
                 ref={scrollRef}
               >

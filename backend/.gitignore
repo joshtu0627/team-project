@@ -58,7 +58,6 @@ dump.rdb
 .yarn-integrity
 
 # dotenv environment variables file
-.env
 change_api_host.sh
 
 # next.js build output
