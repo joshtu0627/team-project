@@ -147,7 +147,7 @@ export default function ProductDetail({ product }: { product: Product }) {
                               .then((res) => res.json())
                               .then((res) => {
                                 console.log("res", res);
-                                setMessageOpen(true);
+                                setMessageOpen(!messageOpen);
                                 setMessageCurrentRoom(res.roomId);
                               });
                           }}

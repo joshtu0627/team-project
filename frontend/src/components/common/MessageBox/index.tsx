@@ -1,14 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import webSocket from "socket.io-client";
 
 import { useUser } from "../../../contexts/UserContext";
 
-import { socketurl, backendurl } from "../../../constants/urls";
+import { socketurl, backendurl, frontendurl } from "../../../constants/urls";
 
 import { IoMdSend } from "react-icons/io";
 import { CiImageOn } from "react-icons/ci";
 import { BsEmojiSmile } from "react-icons/bs";
 import { IoChatbox } from "react-icons/io5";
+import { RxCross1 } from "react-icons/rx";
 
 import Button from "@mui/material/Button";
 
@@ -23,6 +25,7 @@ export default function MessageBox({
 }) {
   const scrollRef = useRef(null);
   const sendButtonRef = useRef(null);
+  const imageInputRef = useRef(null);
 
   const { user } = useUser();
 
@@ -34,10 +37,50 @@ export default function MessageBox({
 
   const [currentRoom, setCurrentRoom] = useState(0);
   const [currentRoomName, setCurrentRoomName] = useState(null);
+  const [currentProductId, setCurrentProductId] = useState(null);
+  const [currentProductDetail, setCurrentProductDetail] = useState(null);
+
+  const [userMessage, setUserMessage] = useState("");
+  const [image, setImage] = useState(null);
 
   const [update, setUpdate] = useState(false);
 
-  const [userMessage, setUserMessage] = useState("");
+  const handleUploadImageButtonClick = () => {
+    imageInputRef.current.click();
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setImage(reader.result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleImageMessageUpload = async () => {
+    const formData = new FormData();
+    formData.append("image", imageInputRef.current.files[0]);
+
+    let res = await fetch(`${backendurl}/api/1.0/message/uploadImage`, {
+      method: "POST",
+      body: formData,
+    });
+    let { url } = await res.json();
+
+    let payload = {
+      sender_id: user.id,
+      room_id: currentRoom,
+      message_content: userMessage,
+      message_image: url,
+      image: user?.picture,
+      timestamp: generateTimestamp(),
+    };
+
+    sendMessage("getMessageRoom", JSON.stringify(payload));
+    setImage(null);
+    setUserMessage("");
+  };
 
   const changeRoom = (id: number) => {
     const room = id;
@@ -97,6 +140,9 @@ export default function MessageBox({
             data.rooms[i].sliced_room_name =
               data.rooms[i].room_name.slice(0, maxLen) + "...";
           }
+          if (data.rooms[i].id === messageCurrentRoom) {
+            setCurrentProductId(data.rooms[i].product_id);
+          }
         }
         setRooms(data.rooms);
         setUpdate(!update);
@@ -105,7 +151,7 @@ export default function MessageBox({
   }, [messageCurrentRoom]);
 
   useEffect(() => {
-    if (!messageOpen) return;
+    // if (!messageOpen) return;
     if (!active) setActive(true);
   }, [messageOpen]);
 
@@ -163,9 +209,26 @@ export default function MessageBox({
   }, [currentRoom]);
 
   useEffect(() => {
+    if (!currentProductId) return;
+    setCurrentProductDetail(null);
+
+    fetch(`${backendurl}/api/1.0/products/${currentProductId}`, {
+      method: "GET",
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        console.log(data);
+        if (!data) return;
+        setCurrentProductDetail(data.data);
+        setUpdate(!update);
+      });
+  }, [currentProductId]);
+
+  useEffect(() => {
     if (messageCurrentRoom > 0) return;
     if (!rooms || rooms.length === 0) return;
     setCurrentRoom(rooms[0].id);
+    setCurrentProductId(rooms[0].product_id);
     changeRoom(rooms[0].id);
   }, [rooms]);
 
@@ -206,12 +269,12 @@ export default function MessageBox({
       {active ? (
         <div className="fixed flex flex-col w-1/3 bg-gray-200 rounded-lg bottom-6 right-3 shadow-3xl h-1/2">
           <div
-            className="w-full  cursor-pointer h-1/6"
+            className="w-full cursor-pointer h-1/6"
             onClick={() => {
               setActive(!active);
             }}
           >
-            <div className=" p-5 flex justify-between">
+            <div className="flex justify-between p-5 ">
               <div className="text-3xl">客服</div>
               <div className="flex items-end">
                 <div className="text-m">{currentRoomName}</div>
@@ -231,6 +294,7 @@ export default function MessageBox({
                       onClick={() => {
                         setCurrentRoom(room.id);
                         setCurrentRoomName(room.room_name);
+                        setCurrentProductId(room.product_id);
                       }}
                     >
                       <div className="w-12 h-12">
@@ -248,7 +312,37 @@ export default function MessageBox({
                 ))}
             </div>
             <div className="w-2/3 h-full bg-white">
-              <div className="overflow-y-scroll h-5/6" ref={scrollRef}>
+              <div
+                className={
+                  "overflow-y-scroll h-5/6" + (image ? " h-4/6" : " h-5/6")
+                }
+                ref={scrollRef}
+              >
+                <div className="flex-col items-center justify-center w-full p-3">
+                  <div className="flex-col w-full p-3 bg-gray-200 rounded-lg">
+                    <div className="flex items-center mb-2 text-sm">
+                      <div>{`您目前正在與客服詢問此商品`}</div>
+                    </div>
+                    <Link
+                      to={`/products/${currentProductDetail?.id}`}
+                      target="_blank"
+                      className="flex"
+                    >
+                      <div className="overflow-hidden w-14 h-14 rounded-xl">
+                        <img
+                          className="object-cover w-full h-full"
+                          src={currentProductDetail?.main_image}
+                        ></img>
+                      </div>
+                      <div className="flex-col ml-2 text-sm">
+                        <div>{currentProductDetail?.title}</div>
+                        <div className="text-red-800">
+                          ${currentProductDetail?.price}
+                        </div>
+                      </div>
+                    </Link>
+                  </div>
+                </div>
                 {currentRoom && messages[currentRoom] ? (
                   messages[currentRoom].map((message) => (
                     <div
@@ -258,31 +352,52 @@ export default function MessageBox({
                       key={message.id}
                     >
                       {message.sender_id === user.id && (
-                        <div className="flex flex-col justify-end">
-                          <div>
-                            <div className="flex items-center flex-1 px-5 mr-2 text-black bg-gray-200 text-l h-14 rounded-2xl">
-                              {message.message_content}
+                        <div className="flex-col">
+                          {message.message_image && (
+                            <div className="overflow-hidden max-h-[200px] max-w-[200px] rounded-xl mb-1">
+                              <img
+                                className="object-cover w-full h-full"
+                                src={message.message_image}
+                              ></img>
                             </div>
-                          </div>
-                          <div className="flex w-full justify-begin">
-                            <div className="mt-2 text-xs">
-                              {getTimeDiff(message.timestamp)}
+                          )}
+                          <div className="flex flex-col justify-end">
+                            <div>
+                              <div className="flex w-full">
+                                <div className="w-full"></div>
+                                <div className="flex items-center justify-end flex-1 px-5 mr-2 text-black bg-gray-200 text-l h-14 rounded-2xl">
+                                  <div>{message.message_content}</div>
+                                </div>
+                              </div>
+                            </div>
+                            <div className="flex justify-end w-full">
+                              <div className="mt-2 text-xs">
+                                {getTimeDiff(message.timestamp)}
+                              </div>
                             </div>
                           </div>
                         </div>
                       )}
 
-                      <div className="w-12 h-12">
+                      {/* <div className="w-12 h-12">
                         <img
                           className="object-cover w-full h-full rounded-full"
                           src={message.image}
                         ></img>
-                      </div>
+                      </div> */}
                       {message.sender_id !== user.id && (
                         <div className="flex flex-col justify-begin">
                           <div>
-                            <div className="flex items-center flex-1 px-5 mr-2 text-black bg-gray-200 text-l h-14 rounded-2xl">
-                              {message.message_content}
+                            <div className="flex items-center flex-1 px-5 ml-2 text-black bg-gray-200 text-l h-14 rounded-2xl">
+                              {message.message_image && (
+                                <div className="overflow-hidden w-14 h-14 rounded-xl">
+                                  <img
+                                    className="object-cover w-full h-full"
+                                    src={message.message_image}
+                                  ></img>
+                                </div>
+                              )}
+                              <div>{message.message_content}</div>
                             </div>
                           </div>
                           <div className="flex w-full justify-begin">
@@ -300,9 +415,32 @@ export default function MessageBox({
                   </div>
                 )}
               </div>
-              <div className="flex flex-col border-t-2 border-gray-400 h-1/6">
+              {image && (
+                <div className="relative flex items-center px-2 border-t border-gray-300 h-1/6">
+                  <img
+                    src={image}
+                    className="object-cover w-12 h-12 rounded-lg"
+                  ></img>
+                  <button
+                    className="absolute top-1 right-2"
+                    onClick={() => {
+                      setImage(null);
+                    }}
+                  >
+                    <RxCross1 />
+                  </button>
+                </div>
+              )}
+
+              <div className="flex flex-col border-t border-gray-300 h-1/6">
                 <div className="flex items-center">
-                  <CiImageOn className="w-8 h-8 ml-2" />
+                  <button
+                    className="flex w-8 h-8"
+                    onClick={handleUploadImageButtonClick}
+                  >
+                    <CiImageOn className="w-8 h-8 ml-2" />
+                  </button>
+
                   <BsEmojiSmile className="w-6 h-6 ml-2" />
                   <input
                     type="text"
@@ -320,8 +458,14 @@ export default function MessageBox({
                   />
                   <button
                     ref={sendButtonRef}
-                    onClick={() => {
+                    onClick={async () => {
+                      if (userMessage === "" && !image) return;
                       console.log(user);
+
+                      if (image) {
+                        await handleImageMessageUpload();
+                        return;
+                      }
 
                       let payload = {
                         sender_id: user.id,
@@ -339,7 +483,7 @@ export default function MessageBox({
                     <IoMdSend className="w-6 h-6" />
                   </button>
                 </div>
-                {/* <div className="flex items-center h-1/3 ml-2">
+                {/* <div className="flex items-center ml-2 h-1/3">
                   <CiImageOn className="w-8 h-8" />
                   <BsEmojiSmile className="w-6 h-6 ml-2" />
                 </div> */}
@@ -359,11 +503,18 @@ export default function MessageBox({
           }}
         >
           <div>
-            <IoChatbox className="h-6 mr-2 w-6" />
+            <IoChatbox className="w-6 h-6 mr-2" />
           </div>
           <div>客服</div>
         </div>
       )}
+      <input
+        type="file"
+        ref={imageInputRef}
+        style={{ display: "none" }}
+        onChange={handleImageChange}
+        accept="image/*"
+      />
     </>
   );
 }
