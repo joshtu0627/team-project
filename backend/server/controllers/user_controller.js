@@ -237,6 +237,7 @@ const signIn = async (req, res) => {
 const getUserProfile = async (req, res) => {
     res.status(200).send({
         data: {
+            id: req.user.id,
             provider: req.user.provider,
             name: req.user.name,
             email: req.user.email,
