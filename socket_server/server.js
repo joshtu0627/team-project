@@ -32,22 +32,12 @@ amqp.connect("amqp://localhost", function (error0, connection) {
     channel.consume(
       "message",
       function (msg) {
-        // msg = JSON.parse(msg);
         console.log(" [x] Received ", msg.content.toString());
         const message = JSON.parse(msg.content.toString());
         console.log("nowRoom", message.nowRoom);
         console.log(io.sockets.adapter.rooms);
         io.sockets.in(message.nowRoom).emit("getMessageRoomReceive", message);
-        // // message = {
-        // //   sender_id: message.sender_id,
-        // //   room_id: message.room_id,
-        // //   message_content: message.message_content,
-        // //   image: message.image,
-        // //   timestamp: message.timestamp,
-        // // };
 
-        // // message = JSON.stringify(message);
-        // console.log();
         fetch(`${process.env.BACKENDURL}/api/1.0/message`, {
           method: "POST",
           headers: {
@@ -96,14 +86,6 @@ amqp.connect("amqp://localhost", function (error0, connection) {
         }
 
         message = JSON.parse(message);
-        // const payload = {
-        //   nowRoom: nowRoom,
-        //   content: message,
-        // };
-        console.log("nowRoom:", nowRoom);
-        // message = {
-        //   nowRoom: nowRoom,
-        // };
         message.nowRoom = nowRoom;
 
         console.log(typeof message);

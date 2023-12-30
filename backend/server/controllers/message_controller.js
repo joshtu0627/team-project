@@ -2,11 +2,8 @@ const Message = require('../models/message_model');
 const User = require('../models/user_model');
 
 const createMessage = async (req, res) => {
-    console.log('aaaaaaaaaaaaaaaaaaaa');
-    console.log(req.body);
     let { message } = req.body;
-    console.log(message);
-    // message = JSON.parse(message);
+
     const messageId = await Message.createMessage(message);
     if (messageId == -1) {
         res.status(500);
@@ -17,8 +14,6 @@ const createMessage = async (req, res) => {
 
 const createRoom = async (req, res) => {
     let room = req.body.room;
-    console.log(room);
-    // room = JSON.parse(room);
 
     const roomId = await Message.createRoom(room);
     if (roomId == -1) {
