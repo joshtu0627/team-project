@@ -36,7 +36,7 @@ export default function Header() {
     <>
       {windowWidth > 1280 ? (
         // desktop's header
-        <div className="fixed top-0 z-50 w-full ">
+        <div className="fixed top-0 z-40 w-full">
           <header className="flex w-full h-20 py-5 text-black bg-white">
             {/* left side of the header */}
             <div className="flex items-center justify-center flex-1 cursor-pointer-bar">
