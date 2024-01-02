@@ -8,7 +8,10 @@ import SearchResultPage from "./pages/SearchResultPage";
 import ThankYouPage from "./pages/ThankYouPage";
 import Loginpage from "./pages/LoginPage";
 import Registerpage from "./pages/RegisterPage";
+import PostStory from "./components/story/postStory/index";
 
+import CreateStory from "./components/story/postStory/postStory";
+import ShowStoryPage from "./components/story/showStory/index";
 import { UserProvider } from "./contexts/UserContext";
 import UserAuthInitializer from "./utils/UserAuthInitializer";
 import "./App.css";
@@ -34,6 +37,9 @@ function App() {
                 <Route path="/thankyou" element={<ThankYouPage />} />
                 <Route path="/login" element={<Loginpage />} />
                 <Route path="/register" element={<Registerpage />} />
+                <Route path="/test" element={<PostStory />} />
+                <Route path="/story" element={<ShowStoryPage />} />
+
               </Routes>
             </BrowserRouter>
           </QueryClientProvider>
