@@ -1,9 +1,13 @@
-/* .MuiPickersCalendarHeader-root {
-  padding: 16px 16px 8px 16px;
-  background-color: antiquewhite;
-  display: flex;
-  justify-content: center;
-  min-height: 200px;
-  height: 500px;
-  max-height: 500px;
-} */
+/* YourComponent.css */
+@keyframes scaleWidth {
+  from {
+    width: 0; /* 初始宽度为 0 */
+  }
+  to {
+    width: 100%; /* 最终宽度为 100% */
+  }
+}
+
+.animate-scale-width {
+  animation: scaleWidth 1.5s ease-out forwards;
+}

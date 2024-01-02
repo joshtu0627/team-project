@@ -9,6 +9,7 @@ import { DayCalendarSkeleton } from "@mui/x-date-pickers/DayCalendarSkeleton";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 import "./index.css";
+import { ImCancelCircle } from "react-icons/im";
 
 function getRandomNumber(min: number, max: number) {
   return Math.round(Math.random() * (max - min) + min);
@@ -50,7 +51,7 @@ function ServerDay(
     highlightedDays.indexOf(props.day.date()) >= 0;
 
   const dayStyle = isSelected
-    ? { backgroundColor: "lightblue", color: "white" }
+    ? { backgroundColor: "#8ac7db", color: "white" }
     : {};
 
   return (
@@ -64,7 +65,13 @@ function ServerDay(
   );
 }
 
-export default function Calendar({ dates }: { dates: any[] }) {
+export default function Calendar({
+  dates,
+  setHasLoggedIn,
+}: {
+  dates: any;
+  setHasLoggedIn: any;
+}) {
   const requestAbortController = React.useRef<AbortController | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [highlightedDays, setHighlightedDays] = React.useState();
@@ -123,12 +130,31 @@ export default function Calendar({ dates }: { dates: any[] }) {
         position: "fixed",
         top: "50%",
         left: "50%",
-        transform: "translate(-50%, -50%)",
+        transform: "translate(-50%, -55%)",
         zIndex: 1000,
-
+        fontFamily: "Island Moments, cursive",
         // 模糊效果
       }}
     >
+      <div className="flex">
+        <div className="relative w-full mb-32 overflow-hidden font-normal text-white text-8xl animate-scale-width">
+          <span style={{ whiteSpace: "nowrap" }}>Daily Check In</span>
+        </div>{" "}
+        <button
+          style={{
+            fontFamily: "sans-serif",
+            right: "-50px",
+            top: "-5%",
+            fontWeight: "100",
+          }}
+          className="absolute text-3xl text-white"
+          onClick={() => {
+            setHasLoggedIn(true);
+          }}
+        >
+          x
+        </button>
+      </div>
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <DateCalendar
           // defaultValue={initialValue}
@@ -146,7 +172,8 @@ export default function Calendar({ dates }: { dates: any[] }) {
           sx={{
             backgroundColor: "white",
             boxShadow: "0px 0px 10px 0px rgba(0,0,0,0.75)",
-            transform: "scale(2) translate(0px,0px) !important",
+            transform: "scale(1.5) !important ",
+            // marginTop: "100px",
             maxHeight: "500px",
             minHeight: "380px",
             ".MuiPickersArrowSwitcher-root": {

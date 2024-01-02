@@ -79,14 +79,16 @@ export default function HomePage() {
 
   return (
     <div>
-      <Header />
-      <Banner />
+      <Header /> <Banner />
       <ProductGrid selectInfo={selectInfo} />
       <MessageBox />
       <Footer />
-      {!hasLoggedIn && <Calendar dates={dates} />}
-
-      {/* <div className="fixed top-0 left-0 z-50 w-screen h-screen bg-gray-500 bg-opacity-50 backdrop-filter backdrop-blur"></div> */}
+      {!hasLoggedIn && (
+        <>
+          <Calendar dates={dates} setHasLoggedIn={setHasLoggedIn} />
+          <div className="fixed top-0 left-0 z-50 w-screen h-screen bg-gray-700 bg-opacity-50 backdrop-filter backdrop-blur"></div>
+        </>
+      )}
     </div>
   );
 }
