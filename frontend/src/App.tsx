@@ -8,7 +8,13 @@ import SearchResultPage from "./pages/SearchResultPage";
 import ThankYouPage from "./pages/ThankYouPage";
 import Loginpage from "./pages/LoginPage";
 import Registerpage from "./pages/RegisterPage";
+<<<<<<< HEAD
 import PostStory from "./components/story/postStory/index";
+=======
+import LiveRoom from "./pages/LiveRoom";
+import Calendar from "./components/common/Calendar";
+
+>>>>>>> 7fe24b5bded1df706560c21278557f6c134c593b
 
 import CreateStory from "./components/story/postStory/postStory";
 import ShowStoryPage from "./components/story/showStory/index";
@@ -37,9 +43,14 @@ function App() {
                 <Route path="/thankyou" element={<ThankYouPage />} />
                 <Route path="/login" element={<Loginpage />} />
                 <Route path="/register" element={<Registerpage />} />
+<<<<<<< HEAD
                 <Route path="/test" element={<PostStory />} />
                 <Route path="/story" element={<ShowStoryPage />} />
 
+=======
+                <Route path="/live" element={<LiveRoom />}/>
+                <Route path="/calendar" element={<Calendar />} />
+>>>>>>> 7fe24b5bded1df706560c21278557f6c134c593b
               </Routes>
             </BrowserRouter>
           </QueryClientProvider>

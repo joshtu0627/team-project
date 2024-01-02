@@ -1,18 +1,61 @@
 import React, { useState, useEffect } from "react";
 
+import MessageBox from "../../common/MessageBox";
+
 import Product from "../../../types/Product";
 import useWindowWidth from "../../../hooks/useWindowWidth";
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import { useUser } from "../../../contexts/UserContext";
+import { backendurl } from "../../../constants/urls";
+import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
+
 
 export default function ProductDetail({ product }: { product: Product }) {
+  const { user } = useUser();
+
   const [amount, setAmount] = useState(0);
   const [selectedColor, setSelectedColor] = useState("");
   const [selectedColorCode, setSelectedColorCode] = useState("");
   const [selectedSize, setSelectedSize] = useState("");
   const [sizeRemain, setSizeRemain] = useState<string[]>([]);
   const [amountRemain, setAmountRemain] = useState(-1);
+  const [isFavorited, setIsFavorited] = useState(false);
+
+  const [messageOpen, setMessageOpen] = useState(false);
+  const [messageCurrentRoom, setMessageCurrentRoom] = useState(-1);
 
   const storage = window.localStorage;
   const windowWidth = useWindowWidth();
+
+
+  // const toggleFavorite = () => {
+  //   setIsFavorited(!isFavorited);
+  //   // 這裡您可以加入將收藏狀態保存到 localStorage 或服務器的代碼
+  // };
+
+// 示例：获取初始收藏状态
+// useEffect(() => {
+//   const fetchFavoriteStatus = async () => {
+//     const userId = /* 获取 userId */;
+//     const response = await checkFavoriteStatus(userId, product.id);
+//     setIsFavorited(response.favorited);
+//   };
+
+//   fetchFavoriteStatus();
+// }, [product.id]);
+
+// // 示例：更新收藏状态
+// const toggleFavorite = async () => {
+//   const userId = /* 获取 userId */;
+//   if (isFavorited) {
+//     await deleteFavorite(userId, product.id);
+//   } else {
+//     await addFavorite(userId, product.id);
+//   }
+//   setIsFavorited(!isFavorited);
+// };
+
+
 
   useEffect(() => {
     if (product.variants) {
@@ -106,12 +149,50 @@ export default function ProductDetail({ product }: { product: Product }) {
                     <img src={product.main_image} className="w-full" alt="" />
                   </div>
                   <div className="w-2/5 p-5 ">
-                    <div className="mb-2 text-xl font-bold">
-                      {product.title}
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="text-xl font-bold ">{product.title}</div>
+                      <button className="flex items-center px-2 py-1 border-2 border-gray-400 rounded-lg">
+                        <IoChatbubbleEllipsesSharp />
+
+                        <div
+                          className="ml-1"
+                          onClick={() => {
+                            const payload = {
+                              room: {
+                                room_name: product.title,
+                                image: product.main_image,
+                                product_id: product.id,
+                                type: "product",
+                                user_id: user?.id,
+                              },
+                            };
+                            console.log("payload", payload);
+
+                            fetch(`${backendurl}/api/1.0/message/room`, {
+                              method: "POST",
+                              headers: {
+                                "Content-Type": "application/json",
+                              },
+                              body: JSON.stringify(payload),
+                            })
+                              .then((res) => res.json())
+                              .then((res) => {
+                                console.log("res", res);
+                                setMessageOpen(!messageOpen);
+                                setMessageCurrentRoom(res.roomId);
+                              });
+                          }}
+                        >
+                          聯絡客服
+                        </div>
+                      </button>
                     </div>
                     <div className="text-sm text-gray-500">{product.id}</div>
                     <div className="my-3 text-xl font-bold">
                       TWD.{product.price}
+                      <button onClick={toggleFavorite} style={{ all: 'unset', cursor: 'pointer', marginLeft: '3em' }}>
+          {isFavorited ? <FaHeart color="red" /> : <FaRegHeart />}
+        </button>
                     </div>
                     <div className="my-3 border-t-2 border-gray-400"></div>
                     <div className="flex items-center my-3">
@@ -293,8 +374,10 @@ export default function ProductDetail({ product }: { product: Product }) {
                       {product.title}
                     </div>
                     <div className="text-sm text-gray-500">{product.id}</div>
+                    
                     <div className="my-3 text-xl font-bold">
                       TWD.{product.price}
+                    
                     </div>
                     <div className="my-3 border-t-2 border-gray-400"></div>
                     <div className="flex items-center my-3">
@@ -463,6 +546,10 @@ export default function ProductDetail({ product }: { product: Product }) {
           )}
         </>
       )}
+      <MessageBox
+        messageOpen={messageOpen}
+        messageCurrentRoom={messageCurrentRoom}
+      />
     </>
   );
 }
