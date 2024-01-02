@@ -9,6 +9,8 @@ import ThankYouPage from "./pages/ThankYouPage";
 import Loginpage from "./pages/LoginPage";
 import Registerpage from "./pages/RegisterPage";
 import LiveRoom from "./pages/LiveRoom";
+import Calendar from "./components/common/Calendar";
+
 
 import { UserProvider } from "./contexts/UserContext";
 import UserAuthInitializer from "./utils/UserAuthInitializer";
@@ -36,6 +38,7 @@ function App() {
                 <Route path="/login" element={<Loginpage />} />
                 <Route path="/register" element={<Registerpage />} />
                 <Route path="/live" element={<LiveRoom />}/>
+                <Route path="/calendar" element={<Calendar />} />
               </Routes>
             </BrowserRouter>
           </QueryClientProvider>
