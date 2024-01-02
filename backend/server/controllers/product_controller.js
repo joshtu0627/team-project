@@ -165,9 +165,6 @@ const slopeOne = async (req, res) => {
     }
 }
 
-const test = async (req, res) => {
-    res.status(200).json({ok:"OK"}) ;
-}
 const getProductById = async (req, res) => {
     const id = parseInt(req.params.id);
     if (!Number.isInteger(id)) {

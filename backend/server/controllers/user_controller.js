@@ -264,5 +264,5 @@ module.exports = {
     healthCheck,
     signIn,
     getUserProfile,
-    reward
+    // reward
 };
