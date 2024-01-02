@@ -4,11 +4,10 @@ import MessageBox from "../../common/MessageBox";
 
 import Product from "../../../types/Product";
 import useWindowWidth from "../../../hooks/useWindowWidth";
-import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useUser } from "../../../contexts/UserContext";
 import { backendurl } from "../../../constants/urls";
 import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
-
 
 export default function ProductDetail({ product }: { product: Product }) {
   const { user } = useUser();
@@ -23,39 +22,38 @@ export default function ProductDetail({ product }: { product: Product }) {
 
   const [messageOpen, setMessageOpen] = useState(false);
   const [messageCurrentRoom, setMessageCurrentRoom] = useState(-1);
+  const [recommendProducts, setRecommendProducts] = useState([]);
+  const [recommendProductsDetail, setRecommendProductsDetail] = useState([]);
 
   const storage = window.localStorage;
   const windowWidth = useWindowWidth();
-
 
   // const toggleFavorite = () => {
   //   setIsFavorited(!isFavorited);
   //   // 這裡您可以加入將收藏狀態保存到 localStorage 或服務器的代碼
   // };
 
-// 示例：获取初始收藏状态
-// useEffect(() => {
-//   const fetchFavoriteStatus = async () => {
-//     const userId = /* 获取 userId */;
-//     const response = await checkFavoriteStatus(userId, product.id);
-//     setIsFavorited(response.favorited);
-//   };
+  // 示例：获取初始收藏状态
+  // useEffect(() => {
+  //   const fetchFavoriteStatus = async () => {
+  //     const userId = /* 获取 userId */;
+  //     const response = await checkFavoriteStatus(userId, product.id);
+  //     setIsFavorited(response.favorited);
+  //   };
 
-//   fetchFavoriteStatus();
-// }, [product.id]);
+  //   fetchFavoriteStatus();
+  // }, [product.id]);
 
-// // 示例：更新收藏状态
-// const toggleFavorite = async () => {
-//   const userId = /* 获取 userId */;
-//   if (isFavorited) {
-//     await deleteFavorite(userId, product.id);
-//   } else {
-//     await addFavorite(userId, product.id);
-//   }
-//   setIsFavorited(!isFavorited);
-// };
-
-
+  // // 示例：更新收藏状态
+  const toggleFavorite = async () => {
+    // const userId = /* 获取 userId */;
+    // if (isFavorited) {
+    //   await deleteFavorite(userId, product.id);
+    // } else {
+    //   await addFavorite(userId, product.id);
+    // }
+    // setIsFavorited(!isFavorited);
+  };
 
   useEffect(() => {
     if (product.variants) {
@@ -90,6 +88,42 @@ export default function ProductDetail({ product }: { product: Product }) {
       setAmount(0);
     }
   }, [selectedSize]);
+
+  useEffect(() => {
+    if (!user || !product) return;
+
+    const getRecommendProducts = async () => {
+      const response = await fetch(
+        `${backendurl}/api/1.0/products/slopeone?user_id=${user.id}&product_id=${product.id}`
+      );
+      const data = await response.json();
+
+      setRecommendProducts(data);
+    };
+
+    getRecommendProducts();
+  }, [user, product]);
+
+  useEffect(() => {
+    if (recommendProducts.length == 0) return;
+
+    const getRecommendProductsDetail = async () => {
+      setRecommendProductsDetail([]);
+      for (let i = 0; i < recommendProducts.length; i++) {
+        const response = await fetch(
+          `${backendurl}/api/1.0/products/${recommendProducts[i]}`
+        );
+        const data = await response.json();
+        console.log("dataaaaaaaaaa", data);
+
+        setRecommendProductsDetail((prev) => {
+          return [...prev, data];
+        });
+      }
+    };
+
+    getRecommendProductsDetail();
+  }, [recommendProducts]);
 
   function addToCart() {
     const data = {
@@ -143,7 +177,8 @@ export default function ProductDetail({ product }: { product: Product }) {
         <>
           {product.colors ? (
             <>
-              <div className="flex justify-center mt-28">
+              <div className="relative flex justify-center mt-28">
+                <div className="w-"></div>
                 <div className="flex w-2/5">
                   <div className="w-3/5">
                     <img src={product.main_image} className="w-full" alt="" />
@@ -190,9 +225,16 @@ export default function ProductDetail({ product }: { product: Product }) {
                     <div className="text-sm text-gray-500">{product.id}</div>
                     <div className="my-3 text-xl font-bold">
                       TWD.{product.price}
-                      <button onClick={toggleFavorite} style={{ all: 'unset', cursor: 'pointer', marginLeft: '3em' }}>
-          {isFavorited ? <FaHeart color="red" /> : <FaRegHeart />}
-        </button>
+                      <button
+                        onClick={toggleFavorite}
+                        style={{
+                          all: "unset",
+                          cursor: "pointer",
+                          marginLeft: "3em",
+                        }}
+                      >
+                        {isFavorited ? <FaHeart color="red" /> : <FaRegHeart />}
+                      </button>
                     </div>
                     <div className="my-3 border-t-2 border-gray-400"></div>
                     <div className="flex items-center my-3">
@@ -374,10 +416,8 @@ export default function ProductDetail({ product }: { product: Product }) {
                       {product.title}
                     </div>
                     <div className="text-sm text-gray-500">{product.id}</div>
-                    
                     <div className="my-3 text-xl font-bold">
                       TWD.{product.price}
-                    
                     </div>
                     <div className="my-3 border-t-2 border-gray-400"></div>
                     <div className="flex items-center my-3">
@@ -550,6 +590,19 @@ export default function ProductDetail({ product }: { product: Product }) {
         messageOpen={messageOpen}
         messageCurrentRoom={messageCurrentRoom}
       />
+      <div className="fixed w-80 top-40 right-12">
+        你可能會喜歡的商品
+        {recommendProductsDetail.length > 0 &&
+          recommendProductsDetail.map((product) => (
+            <div className="flex items-center justify-between p-2 mt-12">
+              <div className="flex items-center">
+                <img src={product.data.main_image} className="w-20" alt="" />
+                <div className="ml-2">{product.data.title}</div>
+              </div>
+              <div className="text-lg font-bold">TWD.{product.data.price}</div>
+            </div>
+          ))}
+      </div>
     </>
   );
 }

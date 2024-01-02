@@ -28,49 +28,48 @@ const createToken = (userName) => {
     const roomName = 'quickstart-room';
     // Use the userId as the identity of the participant
     const participantIdentity = `user-${userName}`;
-  
+
     const at = new AccessToken('APIFpxSwC59GoH6', 'l69Gyn8eMMASfFjl5jSuDCFRerMYptZU867VuScf7KAB', {
-      identity: participantIdentity,
+        identity: participantIdentity,
     });
 
     if (userName === 'yh') {
         at.addGrant({ roomJoin: true, room: roomName, canPublish: true, canPublishData: true, canSubscribe: true });
-      } else {
+    } else {
         // 只能加入會議室，但不能發布視訊和音頻
         at.addGrant({ roomJoin: true, room: roomName, canPublish: false, canPublishData: true, canSubscribe: true });
-      }
+    }
 
     return at.toJwt();
-  }
-  
-  app.get('/getToken', (req, res) => {
+};
+
+app.get('/getToken', (req, res) => {
     // 這裡假設客戶端發送的 JWT 放在 Authorization 頭部
     const authHeader = req.headers.authorization;
     console.log('received from fron', authHeader);
     if (authHeader) {
-      const token = authHeader.split(' ')[1];
-      console.log('received from fron token', token);
-      jwt.verify(token, TOKEN_SECRET, (err, user) => {
-        if (err) {
-          return res.sendStatus(403);
-        }
-        console.log('JWT payload:', user);
+        const token = authHeader.split(' ')[1];
+        console.log('received from fron token', token);
+        jwt.verify(token, TOKEN_SECRET, (err, user) => {
+            if (err) {
+                return res.sendStatus(403);
+            }
+            console.log('JWT payload:', user);
 
-        const userName = user.name;
+            const userName = user.name;
 
-        console.log('name is', userName);
-        res.send({ token: createToken(userName) });
-      });
+            console.log('name is', userName);
+            res.send({ token: createToken(userName) });
+        });
     } else {
-      // 沒有 token，返回錯誤
-      res.sendStatus(401);
+        // 沒有 token，返回錯誤
+        res.sendStatus(401);
     }
-  });
+});
 
 // app.get('/getToken', (req, res) => {
 //     res.send(createToken());
 // });
-
 
 // API routes
 app.use('/api/' + API_VERSION, rateLimiterRoute, [
@@ -79,7 +78,7 @@ app.use('/api/' + API_VERSION, rateLimiterRoute, [
     require('./server/routes/marketing_route'),
     require('./server/routes/user_route'),
     require('./server/routes/order_route'),
-    require('./server/routes/livekit_route'),
+    // require('./server/routes/livekit_route'),
     require('./server/routes/message_route'),
 ]);
 
