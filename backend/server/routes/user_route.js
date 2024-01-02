@@ -2,7 +2,7 @@ const router = require('express').Router();
 
 const { wrapAsync, authentication } = require('../../util/util');
 
-const { signUp, signIn, nativeSignIn, getUserProfile, logout, favorite, deleteFavorite, getFavorite, checkIn, healthCheck} = require('../controllers/user_controller');
+const { signUp, signIn, nativeSignIn, getUserProfile, logout, favorite, deleteFavorite, getFavorite, checkIn, healthCheck, reward} = require('../controllers/user_controller');
 
 
 router.route('/user/signup').post(wrapAsync(signUp));
@@ -22,6 +22,8 @@ router.route('/user/deleteFavorite').post(wrapAsync(deleteFavorite)) ;
 router.route('/user/getFavorite').get(wrapAsync(getFavorite)) ;
 
 router.route('/user/checkIn').get(wrapAsync(checkIn)) ;
+
+router.route('/user/reward').get(wrapAsync(reward)) ;
 
 router.route('/user/profile').get(authentication(), wrapAsync(getUserProfile));
 

@@ -247,6 +247,12 @@ const getUserProfile = async (req, res) => {
     return;
 };
 
+// const reward = async(req, res) => {
+//     const user_id = req.query.user_id ;
+//     const 
+
+// }
+
 module.exports = {
     signUp,
     nativeSignIn,
@@ -258,4 +264,5 @@ module.exports = {
     healthCheck,
     signIn,
     getUserProfile,
+    // reward
 };
