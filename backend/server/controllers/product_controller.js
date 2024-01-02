@@ -139,6 +139,32 @@ const getProductsWithDetail = async (protocol, hostname, products) => {
     });
 };
 
+const press = async (req, res) => {
+    const product_id = req.query.product_id ;
+    try{
+        await Product.press(product_id) ;
+        return res.status(200).json({
+            status : "ok",
+            product_id : product_id 
+        }) ;
+
+    }catch (error) {
+        return { error: error };
+    }
+}
+
+const slopeOne = async (req, res) => {
+    const product_id = parseInt(req.query.product_id) ;
+    const user_id = parseInt(req.query.user_id) ;
+    try{
+        const results = await Product.slopeOne(user_id, product_id) ;
+        return res.status(200).json({data : results }) ;
+
+    }catch (error) {
+        return { error: error };
+    }
+}
+
 const getProductById = async (req, res) => {
     const id = parseInt(req.params.id);
     if (!Number.isInteger(id)) {
@@ -158,5 +184,7 @@ module.exports = {
     createProduct,
     getProductsWithDetail,
     getProducts,
+    press,
+    slopeOne,
     getProductById,
 };
