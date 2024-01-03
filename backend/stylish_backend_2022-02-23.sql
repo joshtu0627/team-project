@@ -5766,7 +5766,8 @@ VALUES
 	(4,"Login Reward", "Random reward", 40.00),
 	(5,"Login Reward", "Random reward", 50.00),
 	(6,"Login Reward", "Random reward", 60.00),
-	(0,"Seven Days Reward", "Special", 200.00);
+	(0,"Seven Days Reward", "Special reward", 200.00),
+	(7, "live Streaming Reward", 10.00) ;
 
 /*!40000 ALTER TABLE `reward` ENABLE KEYS */;
 UNLOCK TABLES;
