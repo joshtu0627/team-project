@@ -95,7 +95,8 @@ const checkIn = async (req, res) => {
             user_id : user_id,
             hasCheckedIn : hasCheckedIn,
             dates : checkInResult,
-            reward : reward
+            reward : reward,
+            continueDay : continueDay
         }) ;
         
     }catch(error){
