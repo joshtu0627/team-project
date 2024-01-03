@@ -8,9 +8,11 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useUser } from "../../../contexts/UserContext";
 import { backendurl } from "../../../constants/urls";
 import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
+import { useParams } from "react-router-dom";
 
 export default function ProductDetail({ product }: { product: Product }) {
   const { user } = useUser();
+  const { productId } = useParams();
 
   const [amount, setAmount] = useState(0);
   const [selectedColor, setSelectedColor] = useState("");
@@ -28,10 +30,81 @@ export default function ProductDetail({ product }: { product: Product }) {
   const storage = window.localStorage;
   const windowWidth = useWindowWidth();
 
-  // const toggleFavorite = () => {
-  //   setIsFavorited(!isFavorited);
-  //   // 這裡您可以加入將收藏狀態保存到 localStorage 或服務器的代碼
-  // };
+  const toggleFavorite = () => {
+    const payload = {
+      user_id: user?.id, // 從用戶上下文獲取用戶 ID
+      product_id: productId, // 從產品 prop 獲取產品 ID
+    };
+    console.log("payload to favorite", payload);
+
+    // 確定使用哪個 API 端點
+    const url = isFavorited
+      ? `${backendurl}/api/1.0/user/deleteFavorite`
+      : `${backendurl}/api/1.0/user/favorite`;
+
+    // 發送 API 請求
+    fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    })
+      .then((res) => res.json())
+      .then((res) => {
+        setIsFavorited(!isFavorited); // 根據回應更新狀態
+      })
+      .catch((error) => {
+        console.error("處理收藏時出錯:", error);
+      });
+  };
+
+  const checkFavoriteStatus = () => {
+    if (!user?.id || !productId) {
+      console.log("User ID or Product ID is undefined.");
+      return;
+    }
+    console.log(
+      "fetch api is ",
+      `${backendurl}/api/1.0/user/getFavorite?user_id=${user?.id}&product_id=${productId}`
+    );
+    fetch(
+      `${backendurl}/api/1.0/user/getFavorite?user_id=${user?.id}&product_id=${productId}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then((res) => {
+        if (!res.ok) {
+          if (res.status === 429) {
+            console.error("請求次數過多");
+          } else {
+            console.error(`HTTP 錯誤！狀態碼：${res.status}`);
+          }
+          return null;
+        }
+        return res.json();
+      })
+      .then((res) => {
+        if (res) {
+          setIsFavorited(res.favorited);
+        }
+      })
+      .catch((error) => {
+        console.error("獲取收藏狀態出錯:", error);
+      });
+  };
+
+  useEffect(() => {
+    if (productId && user?.id) {
+      checkFavoriteStatus();
+    }
+    console.log("id is", user?.id);
+    console.log("product  is", productId);
+  }, [user?.id, productId]);
 
   // 示例：获取初始收藏状态
   // useEffect(() => {
