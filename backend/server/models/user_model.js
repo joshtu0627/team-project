@@ -106,7 +106,7 @@ const reward = async (user_id, reward_id) => {
         const queryStr2 = `
             SELECT 
             id AS reward_id, title, description, value 
-            FROM rewardrecord 
+            FROM reward 
             WHERE id = ? ;` ;
         const rewardDetail = await conn.query(queryStr2, [reward_id]) ;
 
@@ -153,7 +153,10 @@ const useReward = async (user_id, rewardrecord_id) => {
         await conn.query(queryStr1, [user_id, rewardrecord_id]) ;
 
         const queryStr2 = `
-            SELECT * FROM rewardrecord WHERE id = ? ;` ;
+            SELECT 
+            id AS rewardrecord_id, reward_id, used
+            FROM rewardrecord 
+            WHERE id = ? ;` ;
         const rewardDetail = await conn.query(queryStr2, [rewardrecord_id]) ;
 
         await conn.query('COMMIT');
