@@ -98,14 +98,65 @@ const nativeSignIn = async (email, password) => {
 
 const reward = async (user_id, reward_id) => {
     const conn = await pool.getConnection();
-    await conn.query('START TRANSACTION');
     try{
+        await conn.query('START TRANSACTION');
         const queryStr1 = 'INSERT INTO rewardrecord (user_id, reward_id, used) VALUES (?, ?, 0) ;' ;
         await conn.query(queryStr1, [user_id, reward_id]) ;
 
-        const queryStr2 = "SELECT * FROM reward WHERE id = ? ;" ;
+        const queryStr2 = `
+            SELECT 
+            id AS reward_id, title, description, value 
+            FROM rewardrecord 
+            WHERE id = ? ;` ;
         const rewardDetail = await conn.query(queryStr2, [reward_id]) ;
 
+        await conn.query('COMMIT');
+        return rewardDetail[0] ;
+    }catch (error){
+        await conn.query('ROLLBACK');
+        return {error};
+    }finally {
+        await conn.release();
+    }
+} ;
+
+const checkReward = async (user_id) => {
+    const conn = await pool.getConnection();
+    try{
+        await conn.query('START TRANSACTION');
+
+        const queryStr = `
+            SELECT 
+            rewardrecord.id AS rewardrecord_id, rewardrecord.user_id, 
+            rewardrecord.used, reward.title, 
+            reward.description, reward.value
+            FROM rewardrecord 
+            JOIN reward ON rewardrecord.reward_id = reward.id
+            WHERE rewardrecord.user_id = ? AND rewardrecord.used = 0` ;
+        const results = await conn.query(queryStr, [user_id]) ;
+
+        await conn.query('COMMIT');
+        return results[0] ;
+    } catch (error) {
+        await conn.query('ROLLBACK');
+        return {error};
+    } finally {
+        await conn.release();
+    }
+} ;
+
+const useReward = async (user_id, rewardrecord_id) => {
+    const conn = await pool.getConnection();
+    try{
+        await conn.query('START TRANSACTION');
+        const queryStr1 = 'UPDATE rewardrecord SET used = 1 WHERE user_id = ? AND id = ? ;' ;
+        await conn.query(queryStr1, [user_id, rewardrecord_id]) ;
+
+        const queryStr2 = `
+            SELECT * FROM rewardrecord WHERE id = ? ;` ;
+        const rewardDetail = await conn.query(queryStr2, [rewardrecord_id]) ;
+
+        await conn.query('COMMIT');
         return rewardDetail[0] ;
     }catch (error){
         await conn.query('ROLLBACK');
@@ -342,5 +393,7 @@ module.exports = {
     getUserDetail,
     getFacebookProfile,
     deleteFavorite,
-    reward
+    reward,
+    checkReward,
+    useReward
 };

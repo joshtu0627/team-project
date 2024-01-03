@@ -165,9 +165,6 @@ const slopeOne = async (req, res) => {
     }
 }
 
-const test = async (req, res) => {
-    res.status(200).json({ok:"OK"}) ;
-}
 
 module.exports = {
     createProduct,
@@ -175,5 +172,4 @@ module.exports = {
     getProducts,
     press,
     slopeOne,
-    test
 };
