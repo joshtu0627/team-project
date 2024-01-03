@@ -274,7 +274,7 @@ const reward = async (req, res) => {
 } ;
 
 const useReward = async (req, res) => {
-    const {user_id, rewardrecord_id} = req.query ;
+    const {user_id, rewardrecord_id} = req.body ;
     try{
         const result = await User.useReward(user_id, rewardrecord_id) ;
         res.status(200).json({

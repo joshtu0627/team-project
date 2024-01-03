@@ -29,7 +29,7 @@ router.route('/user/reward').post(wrapAsync(reward)) ;
 
 router.route('/user/checkReward').get(wrapAsync(checkReward)) ;
 
-router.route('/user/useReward').get(wrapAsync(useReward)) ;
+router.route('/user/useReward').post(wrapAsync(useReward)) ;
 
 router.route('/user/reward').post(wrapAsync(reward)) ;
 
