@@ -165,6 +165,7 @@ const slopeOne = async (req, res) => {
     }
 }
 
+
 const getProductById = async (req, res) => {
     const id = parseInt(req.params.id);
     if (!Number.isInteger(id)) {
@@ -180,6 +181,7 @@ const getProductById = async (req, res) => {
     res.status(200).json({ data: productsWithDetail[0] });
 };
 
+
 module.exports = {
     createProduct,
     getProductsWithDetail,
@@ -188,3 +190,4 @@ module.exports = {
     slopeOne,
     getProductById,
 };
+
