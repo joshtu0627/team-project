@@ -5,6 +5,7 @@ import Header from "../components/common/Header";
 import Banner from "../components/homepage/Banner";
 import ProductGrid from "../components/homepage/ProductGrid";
 import Footer from "../components/common/Footer";
+import MessageBox from "../components/common/MessageBox";
 
 type SelectInfo = [number, string];
 
@@ -32,6 +33,7 @@ export default function HomePage() {
       <Header />
       <Banner />
       <ProductGrid selectInfo={selectInfo} />
+      <MessageBox />
       <Footer />
     </div>
   );
