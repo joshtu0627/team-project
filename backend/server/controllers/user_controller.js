@@ -83,7 +83,7 @@ const checkIn = async (req, res) => {
         let hasCheckedIn ;
         const firstCheckIn = await User.isTodayCheckIn(user_id, year, month, day) ;
         if (firstCheckIn){
-            const continueDay = await User.lastDayCon(user_id, year, month, day) ;
+            var continueDay = await User.lastDayCon(user_id, year, month, day) ;
             console.log(continueDay) ;
             var checkInResult = await User.checkIn(user_id, year, month, day, continueDay) ;
             var reward = await User.reward(user_id, continueDay) ;
