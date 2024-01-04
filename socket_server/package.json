@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "dev": "nodemon app.js",
-    "live-dev": "nodemon roomserver.js"
+    "live": "nodemon roomserver.js"
   },
   "author": "",
   "license": "ISC",
