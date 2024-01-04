@@ -5,24 +5,39 @@ import FormControl from '@mui/material/FormControl';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
 
-export default function WeightInputField () {
+interface WeightInputFieldProps {
+    weight: number;
+    setWeight: React.Dispatch<React.SetStateAction<number>>;
+
+}
+
+const WeightInputField: React.FC<WeightInputFieldProps> = (props) => {
+    const { weight, setWeight } = props;
+    if (weight === undefined || setWeight === undefined) return null;
     return (
         <Box
             component="form"
             sx={{
-                '& > :not(style)': { m: 1, width: '25ch' },
+                '& > :not(style)': { width: '145px' },
+
             }}
             noValidate
             autoComplete="off"
         >
-            <FormControl sx={{ m: 1, width: '25ch' }} variant="outlined">
+            <FormControl sx={{  width: '145px', backgroundColor: 'white', borderRadius: '20px' }} variant="outlined">
                 <OutlinedInput
                     id="outlined-adornment-weight"
-                    endAdornment={<InputAdornment position="end">kg</InputAdornment>}
+                    endAdornment={<InputAdornment position="end">公斤</InputAdornment>}
                     type='number'
-                    placeholder='Weight'
+                    placeholder='體重'
+                    sx={{ borderRadius: '20px' }}
+                    onChange={(event) => {
+                        setWeight(parseFloat(event.target.value));
+                    }}
                 />
             </FormControl>
         </Box>
     );
 };
+
+export default WeightInputField;

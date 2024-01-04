@@ -15,7 +15,7 @@ export default function ProfilePage() {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <Header />
+      {/* <Header /> */}
       <div className="flex flex-col items-center justify-center w-4/5 h-full">
         <div>名字: {user?.name}</div>
         <div className="mb-5">email: {user?.email}</div>
@@ -31,6 +31,8 @@ export default function ProfilePage() {
         </Button>
         <PaidOrders />
       </div>
+      
+      
       <Footer />
     </div>
   );

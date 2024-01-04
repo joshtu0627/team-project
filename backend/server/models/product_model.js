@@ -72,10 +72,18 @@ const getProductsImages = async (productIds) => {
     return variants;
 };
 
+const getProductById = async (productId) => {
+    const queryStr = 'SELECT * FROM product WHERE id = ?';
+    const bindings = [productId];
+    const [products] = await pool.query(queryStr, bindings);
+    return products[0];
+};
+
 module.exports = {
     createProduct,
     getProducts,
     getHotProducts,
     getProductsVariants,
     getProductsImages,
+    getProductById
 };

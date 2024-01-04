@@ -55,6 +55,7 @@ const nativeSignIn = async (req, res) => {
     try {
         const { user } = await User.nativeSignIn(email, password);
         console.log(user);
+
         res.status(200).send({
             data: {
                 access_token: user.access_token,

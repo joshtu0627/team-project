@@ -13,6 +13,7 @@
   "dependencies": {
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.15.2",
     "@mui/material": "^5.15.1",
     "@tanstack/react-query": "^5.8.2",
     "axios": "^1.6.2",
@@ -23,7 +24,8 @@
     "react-intersection-observer": "^9.5.3",
     "react-responsive-carousel": "^3.2.23",
     "react-router-dom": "^6.18.0",
-    "styled-components": "^6.1.1"
+    "styled-components": "^6.1.1",
+    "sweetalert2": "^11.10.2"
   },
   "devDependencies": {
     "@types/react": "^18.2.15",

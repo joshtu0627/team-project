@@ -2,6 +2,7 @@ require('dotenv').config();
 const validator = require('validator');
 const { TAPPAY_PARTNER_KEY, TAPPAY_MERCHANT_ID } = process.env;
 const Order = require('../models/order_model');
+const { getProductById } = require('../models/product_model');
 
 const checkout = async (req, res) => {
     const data = req.body;
@@ -46,6 +47,22 @@ const checkout = async (req, res) => {
 const getPaidOrders = async (req, res) => {
     const user_id = req.params.userId;
     const orders = await Order.getPaidOrders(user_id);
+    for (let order of orders) {
+        try {
+            // const orderDetails = JSON.parse(order.details);
+            const orderDetails = order.details;
+            const orderList = orderDetails.list;
+            for (let product of orderList) {
+                console.log(product);
+                const item = await getProductById(product.id);
+                console.log(item);
+                product.title = item.title;
+            }
+        } catch (error) {
+            console.error(`Error parsing JSON for order ${order.id}: ${order.details}`);
+            console.error(error);
+        }
+    }
     res.status(200).send({ data: orders });
 }
 
@@ -74,11 +91,18 @@ const getUserPaymentsGroupByDB = async (req, res) => {
     res.status(200).send({ data: orders });
 };
 
+const modifyOrderReviewStatus = async(req, res) => {
+    const { order_id, product_id } = req.body;
+    const result = await Order.modifyOrderReviewStatus(order_id, product_id);
+    res.status(200).send({ data: result });
+}
+
 module.exports = {
     checkout,
     getUserPayments,
     getUserPaymentsGroupByDB,
 
     // chiu
-    getPaidOrders
+    getPaidOrders,
+    modifyOrderReviewStatus
 };

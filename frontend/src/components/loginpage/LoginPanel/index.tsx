@@ -12,6 +12,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useParams, useNavigate } from "react-router-dom";
+import { setCookie } from 'nookies';
 
 import { useUser } from "../../../contexts/UserContext.tsx";
 import { backendurl } from "../../../constants/urls";
@@ -78,6 +79,7 @@ export default function SignIn() {
         login(data.data.user);
         console.log("set", data.data.access_token);
         storage.setItem("token", data.data.access_token);
+        setCookie(null, 'user_id', data.data.user.id , {path: '/'});
         login(data.data.user);
         navigate("/");
       });

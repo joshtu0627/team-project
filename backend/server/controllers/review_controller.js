@@ -1,10 +1,11 @@
 require('dotenv').config();
 const Review = require('../models/review_model');
+const { getUserNameById } = require('../models/user_model');
 
 const createReview = async (req, res) => {
     const data = req.body;
 
-    if (!data.private || !data.star || !data.height || !data.weight || !data.style || !data.size_review || !data.date || !data.product_id || !data.user_id || !data.size || !data.color_name || !data.color_code) {
+    if (!data.is_private || !data.star || !data.height || !data.weight || !data.style || !data.size_review || !data.date || !data.product_id || !data.user_id || !data.size || !data.color_name || !data.color_code) {
         res.status(400).send({ error: 'Create Review Error: Wrong Data Format' });
         return;
     }
@@ -28,6 +29,10 @@ const getReviewsByProductId = async (req, res) => {
     for (let review of reviews) {
         const emojiCount = await Review.countEmojiByReviewId(review.id);
         const userEmoji = await Review.getUserEmojiByReviewId(review.id, user_id);
+
+        const reviewerId = review.user_id;
+        const reviewer = await getUserNameById(reviewerId);
+        review.username = reviewer;
 
         const like = emojiCount.find(entry => entry.emoji === 'like')?.emoji_count || 0;
         const excited = emojiCount.find(entry => entry.emoji === 'excited')?.emoji_count || 0;

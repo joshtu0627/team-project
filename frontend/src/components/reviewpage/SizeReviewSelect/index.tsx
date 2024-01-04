@@ -5,20 +5,27 @@ import FormControl from '@mui/material/FormControl';
 import InputLabel from '@mui/material/InputLabel';
 import Box from '@mui/material/Box';
 
-export default function SizeReviewSelect () {
-    const [sizeReview, setSizeReview] = useState('');
+interface SizeReviewSelectProps {
+    sizeReview: string;
+    setSizeReview: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const SizeReviewSelect: React.FC<SizeReviewSelectProps> = (props) => {
+    const { sizeReview, setSizeReview } = props;
 
     const handleChange = (event: SelectChangeEvent) => {
         setSizeReview(event.target.value as string);
     }
 
+    if (sizeReview === undefined || setSizeReview === undefined) return null;
     return (
-        <Box sx={{ minWidth: 120 }}>
-            <FormControl fullWidth>
+        <Box sx={{ minWidth: 145 }}>
+            <FormControl fullWidth sx={{ borderRadius: "20px", backgroundColor: "white"}}>
                 <InputLabel id="size-review-select-label">尺寸</InputLabel>
                 <Select
                     labelId="size-review-select-label"
                     id="size-review-select"
+                    sx={{ borderRadius: "20px" }}
                     value={sizeReview}
                     onChange={handleChange}
                 >
@@ -30,3 +37,5 @@ export default function SizeReviewSelect () {
         </Box>
     );
 }
+
+export default SizeReviewSelect;
