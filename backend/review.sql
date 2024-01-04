@@ -1,33 +1,33 @@
-create table review (
-    id bigint unsigned auto_increment not null primary key,
-    is_private int not null,
-    star int not null,
-    height decimal(4,1) not null,
-    weight decimal(4,1) not null,
-    style varchar(10) not null,
-    size_review varchar(15) not null,
-    review text,
-    date varchar(20) not null,
-    user_id bigint unsigned not null,
-    product_id bigint unsigned not null,
-    size varchar(5) not null,
-    color_name varchar(20) not null,
-    color_code varchar(10) not null,
-    deleted integer default 0 not null,
-    foreign key (product_id) references product(id),
-    foreign key (user_id) references user(id)
-);
+-- create table review (
+--     id bigint unsigned auto_increment not null primary key,
+--     is_private int not null,
+--     star int not null,
+--     height decimal(4,1) not null,
+--     weight decimal(4,1) not null,
+--     style varchar(10) not null,
+--     size_review varchar(15) not null,
+--     review text,
+--     date varchar(20) not null,
+--     user_id bigint unsigned not null,
+--     product_id bigint unsigned not null,
+--     size varchar(5) not null,
+--     color_name varchar(20) not null,
+--     color_code varchar(10) not null,
+--     deleted integer default 0 not null,
+--     foreign key (product_id) references product(id),
+--     foreign key (user_id) references user(id)
+-- );
 
-create table review_emoji (
-	id int auto_increment not null primary key,
-    review_id bigint unsigned not null,
-    user_id bigint unsigned not null,
-    emoji varchar(15) not null,
-    foreign key (review_id) references review(id),
-    foreign key (user_id) references user(id)
-);
+-- create table review_emoji (
+-- 	id int auto_increment not null primary key,
+--     review_id bigint unsigned not null,
+--     user_id bigint unsigned not null,
+--     emoji varchar(15) not null,
+--     foreign key (review_id) references review(id),
+--     foreign key (user_id) references user(id)
+-- );
 
-INSERT INTO `order_table` VALUES ('1004', '1000', '1628648618609', '0', '{\"list\": [{\"id\": 201807201824, \"qty\": 1, \"size\": \"S\", \"color\": {\"code\": \"FFFFFF\", \"name\": \"White\"}, \"price\": 799}], \"total\": 799}', '10240', '799');
+-- INSERT INTO `order_table` VALUES ('1004', '1000', '1628648618609', '0', '{\"list\": [{\"id\": 201807201824, \"qty\": 1, \"size\": \"S\", \"color\": {\"code\": \"FFFFFF\", \"name\": \"White\"}, \"price\": 799}], \"total\": 799}', '10240', '799');
 
 INSERT INTO `review` VALUES ('1', '0', '5', '170', '53', '合身', '合適', '白色很有質感', '2023-12-25', '1', '201807201824', 'M', '白色', '#FFFFFF', '0');
 INSERT INTO `review` VALUES ('2', '0', '4', '157', '45', '合身', '合適', '沒有色差但送貨慢', '2024-01-04', '2', '201807201824', 'S', '亮綠', '#DDFFBB', '0');

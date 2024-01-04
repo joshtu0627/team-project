@@ -75,9 +75,9 @@ export default function ProfilePage() {
   }, [userfavorite]);
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      {/* <Header /> */}
-      <div className="flex flex-col items-center justify-center w-4/5 h-full">
+    <div className="flex flex-col items-center justify-center">
+      <Header />
+      <div className="flex flex-col items-center justify-center w-4/5 h-full mt-32">
         <div>名字: {user?.name}</div>
         <div className="mb-5">email: {user?.email}</div>
         <div className="flex top-[-180px] right-[-100px] h-44  bg-gray-500 bg-opacity-20 rounded-xl backdrop-filter backdrop-blur flex overflow-scroll w-[600px]">
@@ -153,8 +153,7 @@ export default function ProfilePage() {
         </Button>
         <PaidOrders />
       </div>
-      
-      
+
       <Footer />
     </div>
   );
