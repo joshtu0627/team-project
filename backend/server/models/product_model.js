@@ -102,6 +102,11 @@ module.exports = {
     getProductsImages,
 };
 
+<<<<<<< HEAD
+const getProductById = async (productId) => {
+    const queryStr = 'SELECT * FROM product WHERE id = ?';
+    const bindings = [productId];
+=======
 const press = async (product_id) => {
     const conn = await pool.getConnection();
     try {
@@ -214,6 +219,7 @@ const slopeOne = async (user_id, product_id) => {
 const getProductById = async (id) => {
     const queryStr = 'SELECT * FROM product WHERE id = ?';
     const bindings = [id];
+>>>>>>> 63ab43a2ef407bd6275f59dffb59dff645e9d481
     const [products] = await pool.query(queryStr, bindings);
     return products[0];
 };
@@ -224,7 +230,12 @@ module.exports = {
     getHotProducts,
     getProductsVariants,
     getProductsImages,
+<<<<<<< HEAD
+    getProductById
+};
+=======
     press,
     slopeOne,
     getProductById,
 };
+>>>>>>> 63ab43a2ef407bd6275f59dffb59dff645e9d481

@@ -8,6 +8,7 @@ import { useUser } from "../contexts/UserContext";
 import { backendurl } from "../constants/urls";
 
 import Button from "@mui/material/Button";
+import PaidOrders from "../components/profilepage/PaidOrders";
 
 export default function ProfilePage() {
   const { user, login, logout } = useUser();
@@ -74,9 +75,9 @@ export default function ProfilePage() {
   }, [userfavorite]);
 
   return (
-    <div className="flex flex-col items-center justify-center">
-      <Header />
-      <div className="flex flex-col items-center justify-center w-4/5 h-full mt-32">
+    <div className="flex flex-col items-center justify-center h-screen">
+      {/* <Header /> */}
+      <div className="flex flex-col items-center justify-center w-4/5 h-full">
         <div>名字: {user?.name}</div>
         <div className="mb-5">email: {user?.email}</div>
         <div className="flex top-[-180px] right-[-100px] h-44  bg-gray-500 bg-opacity-20 rounded-xl backdrop-filter backdrop-blur flex overflow-scroll w-[600px]">
@@ -150,7 +151,10 @@ export default function ProfilePage() {
         >
           logout
         </Button>
+        <PaidOrders />
       </div>
+      
+      
       <Footer />
     </div>
   );

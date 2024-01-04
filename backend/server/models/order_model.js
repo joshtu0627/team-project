@@ -56,10 +56,31 @@ const getUserPaymentsGroupByDB = async () => {
     return orders;
 };
 
+// chiu
+const getPaidOrders = async (user_id) => {
+    const [orders] = await pool.query('SELECT * FROM order_table WHERE user_id = ? AND status = ?', [user_id, 0]);
+    return orders;
+}
+
+const modifyOrderReviewStatus = async (order_id, product_id) => {
+    const [order] = await pool.query('SELECT * FROM order_table WHERE id = ?', [order_id]);
+    const details = order[0].details;
+    const list = details.list;
+    const index = list.findIndex((item) => item.id === product_id);
+    list[index].is_reviewed = 1;
+    const newDetails = JSON.stringify(details);
+    const [result] = await pool.query('UPDATE order_table SET details = ? WHERE id = ?', [newDetails, order_id]);
+    return result;
+}
+
 module.exports = {
     createOrder,
     createPayment,
     payOrderByPrime,
     getUserPayments,
     getUserPaymentsGroupByDB,
+
+    // chiu
+    getPaidOrders,
+    modifyOrderReviewStatus
 };

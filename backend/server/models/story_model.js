@@ -44,7 +44,7 @@ const showStory = async () => {
 
         const oneDayAgo = new Date();
         console.log('oneDayAgo', oneDayAgo);
-        oneDayAgo.setDate(oneDayAgo.getDate() - 4);
+        oneDayAgo.setDate(oneDayAgo.getDate() - 5);
         console.log('oneDayAgo1', oneDayAgo);
 
         const [stories] = await dbPromise.query('SELECT * FROM story WHERE create_time >= ?', [oneDayAgo]);

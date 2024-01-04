@@ -24,6 +24,10 @@ morganBody(app);
 // CORS allow all
 app.use(cors());
 
+// healthcheck
+app.get('/healthcheck', (req, res) => {
+    res.status(200).send('OK');
+})
 const createToken = (userName) => {
     const roomName = 'quickstart-room';
     // Use the userId as the identity of the participant
@@ -78,6 +82,8 @@ app.use('/api/' + API_VERSION, rateLimiterRoute, [
     require('./server/routes/marketing_route'),
     require('./server/routes/user_route'),
     require('./server/routes/order_route'),
+    // chiu
+    require('./server/routes/review_route'),
     require('./server/routes/message_route'),
     require('./server/routes/story_route'),
 ]);

@@ -416,6 +416,15 @@ const getFacebookProfile = async function (accessToken) {
     }
 };
 
+const getUserNameById = async function (id) {
+    try {
+        const [users] = await pool.query('SELECT name FROM user WHERE id = ?', [id]);
+        return users[0].name;
+    } catch (e) {
+        return null;
+    }
+};
+
 module.exports = {
     USER_ROLE,
     signUp,
@@ -435,4 +444,5 @@ module.exports = {
     reward,
     checkReward,
     useReward,
+    getUserNameById,
 };

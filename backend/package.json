@@ -13,7 +13,8 @@
         "lint": "./node_modules/.bin/eslint server/ --fix",
         "local_api": "sh change_api_host.sh local",
         "remote_api": "sh change_api_host.sh remote",
-        "dev": "nodemon app.js"
+        "dev": "nodemon app.js",
+        "commit": "cz"
     },
     "repository": {
         "type": "git",
@@ -48,14 +49,22 @@
         "mysql": "^2.18.1",
         "mysql2": "^2.3.3",
         "nodemon": "^2.0.4",
+        "nookies": "^2.5.2",
         "redis": "^4.0.4",
         "sinon": "^8.1.1",
         "validator": "^13.0.0"
     },
     "devDependencies": {
+        "commitizen": "^4.3.0",
+        "cz-conventional-changelog": "^3.3.0",
         "eslint": "^8.5.0",
         "eslint-config-prettier": "^8.4.0",
         "eslint-plugin-prettier": "^4.0.0",
         "prettier": "^2.5.1"
+    },
+    "config": {
+        "commitizen": {
+            "path": "cz-conventional-changelog"
+        }
     }
 }
