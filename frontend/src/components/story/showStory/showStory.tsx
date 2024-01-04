@@ -53,10 +53,15 @@ const ProgressBar = styled.div<{ index: number; currentImageIndex: number }>`
   height: 100%;
   border: 3px solid #464646;
   border-radius: 5px;
-
-  animation: ${({ index, currentImageIndex }) =>
-      index === currentImageIndex ? progressBarAnimation : "none"}
-    10s linear;
+  animation: ${({ index, currentImageIndex }) => {
+    if (index < currentImageIndex) {
+      return progressBarAnimationFinished;
+    } else if (index === currentImageIndex) {
+      return progressBarAnimation;
+    } else {
+      return "none";
+    }
+  }} 10s linear both;
 `;
 
 const ToggleSliderContainer = styled.div`
