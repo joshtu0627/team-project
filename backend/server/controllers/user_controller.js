@@ -95,7 +95,8 @@ const checkIn = async (req, res) => {
             user_id : user_id,
             hasCheckedIn : hasCheckedIn,
             dates : checkInResult,
-            reward : reward
+            reward : reward,
+            continueDay : continueDay
         }) ;
         
     }catch(error){
@@ -247,11 +248,44 @@ const getUserProfile = async (req, res) => {
     return;
 };
 
-// const reward = async(req, res) => {
-//     const user_id = req.query.user_id ;
-//     const 
+const checkReward = async(req, res) => {
+    const user_id = req.query.user_id ;
+    try{
+        const results = await User.checkReward(user_id) ;
+        res.status(200).json({
+            user_id : user_id,
+            reward : results
+        }) ;
+    }catch(error){
+        return { error: error };
+    }
+} ;
 
-// }
+const reward = async (req, res) => {
+    const {user_id, reward_id} = req.body ;
+    try{
+        const result = await User.reward(user_id, reward_id) ;
+        res.status(200).json({
+            user_id : user_id,
+            reward : result
+        }) ;
+    }catch(error){
+        return {error : error} ;
+    }
+} ;
+
+const useReward = async (req, res) => {
+    const {user_id, rewardrecord_id} = req.body ;
+    try{
+        const result = await User.useReward(user_id, rewardrecord_id) ;
+        res.status(200).json({
+            user_id : user_id,
+            reward : result
+        }) ;
+    }catch(error){
+        return {error : error} ;
+    }
+}
 
 module.exports = {
     signUp,
@@ -264,5 +298,7 @@ module.exports = {
     healthCheck,
     signIn,
     getUserProfile,
-    // reward
+    checkReward,
+    useReward,
+    reward
 };

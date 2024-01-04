@@ -22,6 +22,7 @@
     "fabricjs-react": "^1.2.1",
     "livekit-client": "^1.15.5",
     "dayjs": "^1.11.10",
+    "jsonwebtoken": "^9.0.2",
     "react": "^18.2.0",
     "react-color": "^2.19.3",
     "react-dom": "^18.2.0",

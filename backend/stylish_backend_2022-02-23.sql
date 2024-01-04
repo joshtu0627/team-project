@@ -5760,13 +5760,14 @@ LOCK TABLES `reward` WRITE;
 
 INSERT INTO `reward` (`id`, `title`, `description`, `value`)
 VALUES
-	(1,"Login Reward", "Random reward", 10.00),
-	(2,"Login Reward", "Random reward", 20.00),
-	(3,"Login Reward", "Random reward", 30.00),
-	(4,"Login Reward", "Random reward", 40.00),
-	(5,"Login Reward", "Random reward", 50.00),
-	(6,"Login Reward", "Random reward", 60.00),
-	(0,"Seven Days Reward", "Special", 200.00);
+	(1,"Login Reward", "First day reward", 10.00),
+	(2,"Login Reward", "Second day reward", 20.00),
+	(3,"Login Reward", "Third day reward", 30.00),
+	(4,"Login Reward", "Fourth day reward", 40.00),
+	(5,"Login Reward", "Fifth day reward", 50.00),
+	(6,"Login Reward", "Sixth day reward", 60.00),
+	(0,"Seven Days Reward", "Consecutive Login Rewards", 200.00),
+	(7, "live Streaming Reward", "unexpected windfall", 10.00)  ;
 
 /*!40000 ALTER TABLE `reward` ENABLE KEYS */;
 UNLOCK TABLES;
