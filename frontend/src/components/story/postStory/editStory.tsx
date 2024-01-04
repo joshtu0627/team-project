@@ -75,6 +75,8 @@ export default function EditStory({ storyPicOrVideo }) {
   const history = [];
   const [color, setColor] = useState("#35363a");
   const [cropImage, setCropImage] = useState(true);
+  const [url, setUrl] = useState("");
+
 
   useEffect(() => {
     if (!editor || !fabric) {
@@ -320,19 +322,18 @@ export default function EditStory({ storyPicOrVideo }) {
     const formData = new FormData();
     formData.append("image", file);
     const res = await fetch(
-      `http://13.236.23.10:3000/api/1.0/message/uploadImage`,
+      `http://localhost:3000/api/1.0/message/uploadImage`,
       {
         method: "POST",
         body: formData,
       }
     );
-    const { picUrl } = await res.json();
+    const picUrl = (await res.json()).url;
     console.log(picUrl);
 
     const postDatares = await postData(picUrl, url);
     console.log(postDatares);
     window.history.back();
-
   };
 
   const imageInputRef = useRef(null);
@@ -358,7 +359,6 @@ export default function EditStory({ storyPicOrVideo }) {
   };
 
   const [showInput, setShowInput] = useState(false);
-  const [url, setUrl] = useState("");
   const handleButtonClick = () => {
     setShowInput(!showInput); // 切換輸入框的顯示狀態
   };
