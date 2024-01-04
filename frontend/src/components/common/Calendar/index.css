@@ -1,0 +1,36 @@
+/* YourComponent.css */
+@keyframes scaleWidth {
+  from {
+    width: 0; /* 初始宽度为 0 */
+  }
+  to {
+    width: 100%; /* 最终宽度为 100% */
+  }
+}
+
+.animate-scale-width {
+  animation: scaleWidth 1.5s ease-out forwards;
+}
+
+/* 通过 filter 属性添加发光特效 */
+/* .glow-effect {
+  filter: brightness(150%);
+} */
+
+/* 或者使用 drop-shadow 添加阴影效果 */
+@keyframes blink {
+  0% {
+    filter: drop-shadow(0 0 15px rgba(255, 255, 230, 0.5));
+  }
+  50% {
+    filter: drop-shadow(0 0 25px rgba(255, 255, 230, 0.7));
+  }
+  100% {
+    filter: drop-shadow(0 0 15px rgba(255, 255, 230, 0.5));
+  }
+}
+
+/* 应用动画效果到图像 */
+.glow-effect {
+  animation: blink 2s infinite; /* 播放时间为 2 秒，无限循环 */
+}

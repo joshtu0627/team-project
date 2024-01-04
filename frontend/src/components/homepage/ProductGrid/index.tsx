@@ -72,7 +72,10 @@ export default function ProductGrid({ selectInfo }: ProductGridProps) {
                 {Array(6)
                   .fill(0)
                   .map((_, i) => (
-                    <div className="flex flex-col justify-center mx-5 animate-pulse">
+                    <div
+                      className="flex flex-col justify-center mx-5 animate-pulse"
+                      key={i}
+                    >
                       <div className="w-full bg-gray-200 h-96 rounded-2xl"></div>
                       <div className="w-full mt-5 bg-gray-200 animate-pulse h-7 rounded-2xl"></div>
                       <div className="w-3/4 my-2 bg-gray-200 animate-pulse h-7 rounded-2xl"></div>

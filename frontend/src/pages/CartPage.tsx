@@ -7,6 +7,7 @@ import CartProduct from "../types/CartProduct";
 
 import useWindowWidth from "../hooks/useWindowWidth";
 import { backendurl } from "../constants/urls";
+import { useUser } from "../contexts/UserContext";
 
 interface UserFormData {
   name: string;
@@ -18,6 +19,7 @@ interface UserFormData {
 
 export default function CartPage() {
   const windowWidth = useWindowWidth();
+  const { user } = useUser();
 
   const [cartProducts, setCartProducts] = useState<CartProduct[]>([]);
   const [userFormData, setUserFormData] = useState<UserFormData>({
@@ -31,6 +33,12 @@ export default function CartPage() {
   const [payTime, setPayTime] = useState<string>("");
 
   const [total, setTotal] = useState(0);
+
+  const [userCoupon, setUserCoupon] = useState([]);
+
+  const [selectedCoupon, setSelectedCoupon] = useState(-1);
+
+  const [openCouponSelect, setOpenCouponSelect] = useState(false);
 
   const storage = window.localStorage;
 
@@ -116,6 +124,21 @@ export default function CartPage() {
     }
     countTotal();
   }, [cartProducts]);
+
+  useEffect(() => {
+    if (!user) return;
+    fetch(`${backendurl}/api/1.0/user/checkReward?user_id=${user.id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((resp) => resp.json())
+      .then((data) => {
+        console.log("data", data);
+        setUserCoupon(data.reward);
+      });
+  }, [user]);
 
   function deleteProduct(id: number, color_name: string, size: string) {
     console.log("id", id);
@@ -263,7 +286,11 @@ export default function CartPage() {
     <>
       <Header />
       {windowWidth > 1280 ? (
-        <>
+        <div
+          onClick={(e) => {
+            setOpenCouponSelect(false);
+          }}
+        >
           <div className="mt-36"></div>
           <div className="flex justify-center">
             <div className="flex w-4/5">
@@ -502,6 +529,75 @@ export default function CartPage() {
               <div className="flex justify-end my-10">
                 <div className="w-72">
                   <div className="flex-col font-bold">
+                    <div className="relative flex justify-between my-3">
+                      <div>
+                        優惠券{" "}
+                        <span
+                          className="ml-3 text-blue-700 cursor-pointer"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setOpenCouponSelect(!openCouponSelect);
+                          }}
+                        >
+                          選擇
+                        </span>
+                      </div>
+                      {openCouponSelect && (
+                        <div className="absolute flex top-[-180px] right-[-100px] h-44  bg-gray-500 bg-opacity-20 rounded-xl backdrop-filter backdrop-blur flex overflow-scroll w-[600px]">
+                          {userCoupon.length > 0 ? (
+                            <div
+                              className="inline-flex items-center gap-3 px-2 mx-3"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                              }}
+                            >
+                              {userCoupon.map((coupon, index) => (
+                                <div
+                                  key={index}
+                                  className={
+                                    "flex-col flex items-center justify-center bg-gray-100 h-36 w-[200px] flex-shrink-0 shadow-md rounded-xl hover:shadow-xl cursor-pointer hover:bg-white transition duration-300 ease-in-out" +
+                                    (selectedCoupon === index
+                                      ? " border-2 border-gray-700"
+                                      : "")
+                                  }
+                                  onClick={() => {
+                                    selectedCoupon === index
+                                      ? setSelectedCoupon(-1)
+                                      : setSelectedCoupon(index);
+                                  }}
+                                >
+                                  <div className="justify-center">
+                                    <div className="mb-2 text-sm">
+                                      {coupon.value === "Unexpected Windfall"
+                                        ? "直播獎勵"
+                                        : "登入優惠券"}
+                                    </div>
+                                  </div>
+                                  <div className="flex flex-col items-center justify-center w-4/5">
+                                    <img
+                                      src={`/assets/images/coupons/${coupon.value}.png`}
+                                      alt=""
+                                    />
+                                    <div className="justify-center mt-3">
+                                      <div className="text-2xl">
+                                        ${coupon?.value}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <div className="mx-auto">*沒有優惠券</div>
+                          )}
+                        </div>
+                      )}
+                      {selectedCoupon !== -1 && (
+                        <div className="text-xl">
+                          -NT. {userCoupon[selectedCoupon].value}
+                        </div>
+                      )}
+                    </div>
                     <div className="flex justify-between my-3">
                       <div>總金額</div>
                       <div>
@@ -523,7 +619,14 @@ export default function CartPage() {
                       <div>應付金額</div>
                       <div>
                         NT.
-                        <span className="text-xl"> {total + 30}</span>
+                        <span className="text-xl">
+                          {" "}
+                          {total +
+                            30 -
+                            (selectedCoupon !== -1
+                              ? userCoupon[selectedCoupon].value
+                              : 0)}
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -540,7 +643,7 @@ export default function CartPage() {
               </div>
             </div>
           </div>
-        </>
+        </div>
       ) : (
         <>
           <div className="mt-32"></div>
