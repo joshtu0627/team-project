@@ -54,14 +54,15 @@ const ProgressBar = styled.div<{ index: number; currentImageIndex: number }>`
   border: 3px solid #464646;
   border-radius: 5px;
   animation: ${({ index, currentImageIndex }) => {
-    if (index < currentImageIndex) {
-      return progressBarAnimationFinished;
-    } else if (index === currentImageIndex) {
-      return progressBarAnimation;
-    } else {
-      return "none";
-    }
-  }} 10s linear both;
+      if (index < currentImageIndex) {
+        return progressBarAnimationFinished;
+      } else if (index === currentImageIndex) {
+        return progressBarAnimation;
+      } else {
+        return "none";
+      }
+    }}
+    10s linear both;
 `;
 
 const ToggleSliderContainer = styled.div`
@@ -98,30 +99,40 @@ const ImageContainer = styled.div`
 const ShowStory: React.FC = () => {
   //   const [timeRemaining, setTimeRemaining] = useState<number>(60); // 初始时间，单位：秒
 
-  const images = [
-    "/assets/images/story-images/cloth.png",
-    "https://pic.52112.com/180130/180130_6/UVGxaq4GN8.jpg",
-    "https://static.wixstatic.com/media/1c59e0_fbfeae6a72d8422881380f8429e02947~mv2.jpg/v1/crop/x_0,y_34,w_450,h_611/fill/w_540,h_733,al_c,lg_1,q_85,enc_auto/trashion%20main%20image%20mobile81.jpg",
-    "https://media.karousell.com/media/photos/products/2023/10/31/_______1698759363_32047f7f_progressive.jpg",
-  ];
-  const storyData = async () => {
-    const data = await getData();
-    console.log(data);
-    return data;
-  };
+  // const images = [
+  //   "/assets/images/story-images/cloth.png",
+  //   "https://pic.52112.com/180130/180130_6/UVGxaq4GN8.jpg",
+  //   "https://static.wixstatic.com/media/1c59e0_fbfeae6a72d8422881380f8429e02947~mv2.jpg/v1/crop/x_0,y_34,w_450,h_611/fill/w_540,h_733,al_c,lg_1,q_85,enc_auto/trashion%20main%20image%20mobile81.jpg",
+  //   "https://media.karousell.com/media/photos/products/2023/10/31/_______1698759363_32047f7f_progressive.jpg",
+  // ];
+  const [stories, setStories] = useState<string[]>([]);
 
-  const imageCount = images.length;
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await getData();
+        setStories(data);
+        console.log("asd", data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData(); // 立即調用 async 函數
+  }, []);
+
+  const imageCount = stories.length;
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   useEffect(() => {
     const slideshowTimer = setTimeout(() => {
-      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % images.length);
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % stories.length);
     }, 10000);
 
     return () => {
       clearTimeout(slideshowTimer);
     };
-  }, [currentImageIndex, images]);
+  }, [currentImageIndex, stories]);
 
   const handleDecreaseSlider = () => {
     if (currentImageIndex === 0)
@@ -129,15 +140,25 @@ const ShowStory: React.FC = () => {
     setCurrentImageIndex((prevIndex) => prevIndex - 1);
   };
   const handleIncreaseSlider = () => {
-    if (currentImageIndex === images.length - 1)
+    if (currentImageIndex === stories.length - 1)
       return setCurrentImageIndex((prevIndex) => prevIndex);
     setCurrentImageIndex((prevIndex) => prevIndex + 1);
+  };
+
+  const handlePurchaseButtonClick = () => {
+    console.log("currentStory", stories);
+
+    const currentStory = stories[currentImageIndex];
+    // console.log("currentStory", currentStory);
+    if (currentStory && currentStory.purchase_url) {
+      window.location.href = currentStory.purchase_url;
+    }
   };
 
   return (
     <WholeContainer>
       <AlignPorgressBar>
-        {images.map((image, index) => (
+        {stories.map((stories, index) => (
           <ProgressBarContainer imageCount={imageCount} key={index}>
             <ProgressBar index={index} currentImageIndex={currentImageIndex} />
           </ProgressBarContainer>
@@ -145,7 +166,7 @@ const ShowStory: React.FC = () => {
       </AlignPorgressBar>
       <ImageContainer>
         <img
-          src={images[currentImageIndex]}
+          src={stories[currentImageIndex]?.picUrl}
           style={{ border: "4px solid #464646", width: "28vw", height: "70vh" }}
           alt={"images"}
         />
@@ -154,7 +175,9 @@ const ShowStory: React.FC = () => {
           <ToggleSlider onClick={handleIncreaseSlider} />
         </ToggleSliderContainer>
       </ImageContainer>
-      <PurchaseButton>按此購買</PurchaseButton>
+      <PurchaseButton onClick={handlePurchaseButtonClick}>
+        按此購買
+      </PurchaseButton>
     </WholeContainer>
   );
 };
