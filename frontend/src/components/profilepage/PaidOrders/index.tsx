@@ -45,7 +45,7 @@ export default function PaidOrders() {
   }, []);
 
   return (
-    <div className="w-2/3">
+    <div className="">
       {orders.map(({ id, details, total }) => {
         const order_id = id;
         return (

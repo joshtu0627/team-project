@@ -594,7 +594,7 @@ export default function CartPage() {
                       )}
                       {selectedCoupon !== -1 && (
                         <div className="text-xl">
-                          -NT. {userCoupon[selectedCoupon].value}
+                          - NT. {userCoupon[selectedCoupon].value}
                         </div>
                       )}
                     </div>

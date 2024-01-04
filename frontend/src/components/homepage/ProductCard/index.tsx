@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useUser } from "../../../contexts/UserContext";
 import { backendurl } from "../../../constants/urls";
 import Product from "../../../types/Product";
@@ -23,7 +23,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
     const payload = {
       user_id: user.id,
-      product_id: product.id
+      product_id: product.id,
     };
 
     fetch(url, {
@@ -31,30 +31,32 @@ export default function ProductCard({ product }: { product: Product }) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     })
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         setIsFavorited(data.favorited);
       })
-      .catch(error => {
-        console.error('處理收藏error:', error);
+      .catch((error) => {
+        console.error("處理收藏error:", error);
       });
   };
 
-
   useEffect(() => {
     if (user && user.id && product.id) {
-      fetch(`${backendurl}/api/1.0/user/getFavorite?user_id=${user.id}&product_id=${product.id}`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
+      fetch(
+        `${backendurl}/api/1.0/user/getFavorite?user_id=${user.id}&product_id=${product.id}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-      })
-        .then(res => {
+      )
+        .then((res) => {
           if (!res.ok) {
             if (res.status === 429) {
-              console.error('請求次數過多');
+              console.error("請求次數過多");
             } else {
               console.error(`error code：${res.status}`);
             }
@@ -62,20 +64,20 @@ export default function ProductCard({ product }: { product: Product }) {
           }
           return res.json();
         })
-        .then(data => {
+        .then((data) => {
           if (data) {
             setIsFavorited(data.favorited);
           }
         })
-        .catch(error => {
-          console.error('獲取收藏狀態error:', error);
+        .catch((error) => {
+          console.error("獲取收藏狀態error:", error);
         });
     }
   }, [user, product.id]);
 
   return (
     <div className="flex flex-col justify-center justify-between m-3">
-      <div className="flex flex-col justify-center w-full h-full">
+      <div className="flex flex-col justify-center w-full h-full overflow-hidden">
         <Link to={`/products/${product.id}`}>
           <img
             src={product.main_image}
@@ -84,8 +86,10 @@ export default function ProductCard({ product }: { product: Product }) {
         </Link>
       </div>
       <div>
-        <div className="flex my-2 mt-2 justify-left items-center">
-          <div className="flex flex-grow"> {/* Flex container for color squares */}
+        <div className="flex items-center my-2 mt-2 justify-left">
+          <div className="flex flex-grow">
+            {" "}
+            {/* Flex container for color squares */}
             {product.colors.length > 0 &&
               product.colors.map((color) => (
                 <div
@@ -95,8 +99,15 @@ export default function ProductCard({ product }: { product: Product }) {
                 ></div>
               ))}
           </div>
-          <button onClick={toggleFavorite} style={{ all: 'unset', cursor: 'pointer' }}>
-            {isFavorited ? <FaHeart color="red" size={24} /> : <FaRegHeart size={24} />}
+          <button
+            onClick={toggleFavorite}
+            style={{ all: "unset", cursor: "pointer" }}
+          >
+            {isFavorited ? (
+              <FaHeart color="red" size={24} />
+            ) : (
+              <FaRegHeart size={24} />
+            )}
           </button>
         </div>
         <div className="text-gray-500">{product.title}</div>

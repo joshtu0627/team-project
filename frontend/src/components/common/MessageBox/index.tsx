@@ -406,26 +406,42 @@ export default function MessageBox({
                         ></img>
                       </div> */}
                       {message.sender_id !== user.id && (
-                        <div className="flex flex-col justify-begin">
-                          <div>
-                            <div className="flex items-center flex-1 px-5 ml-2 text-black bg-gray-200 text-l h-14 rounded-2xl">
-                              {message.message_image && (
-                                <div className="overflow-hidden w-14 h-14 rounded-xl">
+                        <>
+                          <div className="flex-col">
+                            {message.message_image ? (
+                              <>
+                                <div className="px-3 py-4 mb-1 mr-2 overflow-hidden bg-gray-200 rounded-xl">
                                   <img
-                                    className="object-cover w-full h-full"
+                                    className="object-cover  mb-3 rounded-xl max-w-[200px] max-h-[200px] h-full cursor-pointer"
                                     src={message.message_image}
+                                    onClick={() => {
+                                      setSelectedImage(message.message_image);
+                                      setOpenImageDialog(true);
+                                    }}
                                   ></img>
+                                  <div>{message.message_content}</div>
                                 </div>
-                              )}
-                              <div>{message.message_content}</div>
-                            </div>
+                                <div className="mt-2 text-xs">
+                                  {getTimeDiff(message.timestamp)}
+                                </div>
+                              </>
+                            ) : (
+                              <div className="flex flex-col justify-end">
+                                <div className="break-words px-5 mr-2 text-black bg-gray-200 text-l py-4 rounded-2xl max-w-[200px] max-h-[600px]">
+                                  <div className="">
+                                    {message.message_content}
+                                  </div>
+                                </div>
+
+                                <div className="flex w-full justify-begin">
+                                  <div className="mt-2 text-xs">
+                                    {getTimeDiff(message.timestamp)}
+                                  </div>
+                                </div>
+                              </div>
+                            )}
                           </div>
-                          <div className="flex w-full justify-begin">
-                            <div className="mt-2 text-xs">
-                              {getTimeDiff(message.timestamp)}
-                            </div>
-                          </div>
-                        </div>
+                        </>
                       )}
                     </div>
                   ))

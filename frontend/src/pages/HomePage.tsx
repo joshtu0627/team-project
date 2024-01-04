@@ -87,6 +87,10 @@ export default function HomePage() {
     //window.location.href = `${frontendurl}/live`;
   };
 
+  const navigateToStory = () => {
+    navigate("/story/show");
+  };
+
   return (
     <div>
       <Header /> <Banner />
@@ -110,7 +114,7 @@ export default function HomePage() {
           left: "1%",
           top: "75%",
           transform: "translateY(-50%)",
-          zIndex: 1000,
+          zIndex: 40,
           cursor: "pointer",
         }}
         onClick={navigateToLiveRoom}
@@ -129,6 +133,33 @@ export default function HomePage() {
           }}
         >
           進入直播間
+        </p>
+      </div>
+      <div
+        style={{
+          position: "fixed",
+          left: "1%",
+          top: "85%",
+          transform: "translateY(-50%)",
+          zIndex: 40,
+          cursor: "pointer",
+        }}
+        onClick={navigateToStory}
+      >
+        <img
+          src="camera.png"
+          alt="限時動態"
+          style={{ width: "100px", height: "100px" }}
+        />
+        <p
+          style={{
+            margin: "-18% 0 0 15%",
+            fontSize: "14px",
+            color: "#333",
+            fontFamily: "Microsoft YaHei, Arial, sans-serif",
+          }}
+        >
+          限時動態
         </p>
       </div>
     </div>

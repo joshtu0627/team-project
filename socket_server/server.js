@@ -123,6 +123,21 @@ amqp.connect("amqp://localhost", function (error0, connection) {
         socket.join(room);
         io.sockets.in(room).emit("joinRoom", "已有新人加入聊天室！");
       });
+
+      console.log("New client connected");
+
+      socket.on("disconnect", () => {
+        console.log("Client disconnected");
+      });
+
+      socket.on("customEvent", (data) => {
+        console.log("Custom event received:", data);
+      });
+
+      socket.on("broadcastProductId", (productId) => {
+        console.log("Broadcasting productId to all clients:", productId);
+        io.emit("updateProduct", productId);
+      });
     });
   });
 });
