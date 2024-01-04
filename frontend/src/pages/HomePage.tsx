@@ -30,7 +30,8 @@ export default function HomePage() {
   }, [category]);
 
   const navigateToLiveRoom = () => {
-    window.location.href = `${frontendurl}/live`;
+    navigate("/live");
+    //window.location.href = `${frontendurl}/live`;
   };
 
 
