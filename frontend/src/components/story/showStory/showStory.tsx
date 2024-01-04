@@ -107,7 +107,6 @@ const ShowStory: React.FC = () => {
   // ];
   const [stories, setStories] = useState<string[]>([]);
 
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -118,11 +117,9 @@ const ShowStory: React.FC = () => {
         console.error("Error fetching data:", error);
       }
     };
-  
+
     fetchData(); // 立即調用 async 函數
-  
   }, []);
-  
 
   const imageCount = stories.length;
 
@@ -148,6 +145,16 @@ const ShowStory: React.FC = () => {
     setCurrentImageIndex((prevIndex) => prevIndex + 1);
   };
 
+  const handlePurchaseButtonClick = () => {
+    console.log("currentStory", stories);
+
+    const currentStory = stories[currentImageIndex];
+    // console.log("currentStory", currentStory);
+    if (currentStory && currentStory.purchase_url) {
+      window.location.href = currentStory.purchase_url;
+    }
+  };
+
   return (
     <WholeContainer>
       <AlignPorgressBar>
@@ -168,7 +175,9 @@ const ShowStory: React.FC = () => {
           <ToggleSlider onClick={handleIncreaseSlider} />
         </ToggleSliderContainer>
       </ImageContainer>
-      <PurchaseButton>按此購買</PurchaseButton>
+      <PurchaseButton onClick={handlePurchaseButtonClick}>
+        按此購買
+      </PurchaseButton>
     </WholeContainer>
   );
 };
