@@ -29,6 +29,10 @@ const IconContainer = styled.div`
   z-index: 5;
 `;
 const Icon = styled.img<{ hasSelectedFile: boolean }>`
+  position: absolute;
+  top: 0;
+  left: 0;
+
   background-color: ${({ hasSelectedFile }) =>
     hasSelectedFile ? "#808080" : "#000000"};
   border-radius: 50%;
@@ -40,6 +44,9 @@ const Icon = styled.img<{ hasSelectedFile: boolean }>`
   z-index: 5;
 `;
 const SettingIcon = styled.img<{ hasSelectedFile: boolean }>`
+position: absolute;
+  top: 0;
+  right: 0;
   background-color: ${({ hasSelectedFile }) =>
     hasSelectedFile ? "#808080" : "#000000"};
   border-radius: 50%;
@@ -50,7 +57,6 @@ const SettingIcon = styled.img<{ hasSelectedFile: boolean }>`
   cursor: pointer;
   padding: 2px;
   z-index: 5;
-
 `;
 const SelectedFile = styled.div`
   position: absolute;
@@ -133,19 +139,17 @@ const CreateStory: React.FC = () => {
   return (
     <>
       <Container>
-        <IconContainer>
-          <Icon
-            src="/assets/images/story-images/x-icon-white.png"
-            alt="hi"
-            hasSelectedFile={!!selectedFile}
-            onClick={() => window.history.back()}
-          />
-          <SettingIcon
-            src="/assets/images/story-images/setting.png"
-            alt="hi"
-            hasSelectedFile={!!selectedFile}
-          />
-        </IconContainer>
+        <Icon
+          src="/assets/images/story-images/x-icon-white.png"
+          alt="hi"
+          hasSelectedFile={!!selectedFile}
+          onClick={() => window.history.back()}
+        />
+        <SettingIcon
+          src="/assets/images/story-images/setting.png"
+          alt="hi"
+          hasSelectedFile={!!selectedFile}
+        />
         {selectedFile ? (
           <SelectedFile>
             {selectedFile.type.startsWith("image/") ? (
