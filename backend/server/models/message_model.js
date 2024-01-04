@@ -1,30 +1,70 @@
 const { pool } = require('./mysqlcon');
 
 const createMessage = async (message) => {
-    console.log(message);
-    delete message.nowRoom;
-    const [result] = await pool.query('INSERT INTO message SET ?', message);
-    return result.insertId;
+    const conn = await pool.getConnection();
+    try {
+        console.log(message);
+        delete message.nowRoom;
+        const [result] = await conn.query('INSERT INTO message SET ?', message);
+        return result.insertId;
+    } catch (error) {
+        console.log(error);
+        return -1;
+    } finally {
+        if (conn) await conn.release();
+    }
 };
 
 const createRoom = async (room) => {
-    const [result] = await pool.query('INSERT INTO rooms SET ?', room);
-    return result.insertId;
+    const conn = await pool.getConnection();
+    try {
+        const [result] = await conn.query('INSERT INTO rooms SET ?', room);
+        return result.insertId;
+    } catch (error) {
+        console.log(error);
+        return -1;
+    } finally {
+        if (conn) await conn.release();
+    }
 };
 
 const getMessagesByRoomId = async (roomId) => {
-    const [messages] = await pool.query('SELECT * FROM message WHERE room_id = ?', [roomId]);
-    return messages;
+    const conn = await pool.getConnection();
+    try {
+        const [messages] = await conn.query('SELECT * FROM message WHERE room_id = ?', [roomId]);
+        return messages;
+    } catch (error) {
+        console.log(error);
+        return [];
+    } finally {
+        if (conn) await conn.release();
+    }
 };
 
 const getRoomsByUserId = async (userId) => {
-    const [rooms] = await pool.query('SELECT * FROM rooms WHERE user_id = ?', [userId]);
-    return rooms;
+    const conn = await pool.getConnection();
+    try {
+        const [rooms] = await conn.query('SELECT * FROM rooms WHERE user_id = ?', [userId]);
+        return rooms;
+    } catch (error) {
+        console.log(error);
+        return [];
+    } finally {
+        if (conn) await conn.release();
+    }
 };
 
 const getAllRooms = async () => {
-    const [rooms] = await pool.query('SELECT * FROM rooms');
-    return rooms;
+    const conn = await pool.getConnection();
+    try {
+        const [rooms] = await conn.query('SELECT * FROM rooms');
+        return rooms;
+    } catch (error) {
+        console.log(error);
+        return [];
+    } finally {
+        if (conn) await conn.release();
+    }
 };
 
 module.exports = {

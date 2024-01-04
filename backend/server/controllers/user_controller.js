@@ -73,106 +73,102 @@ const nativeSignIn = async (req, res) => {
     }
 };
 
-
 const checkIn = async (req, res) => {
-    try{
-        const user_id = req.query.user_id ;
-        const year = req.query.year ;
-        const month = req.query.month ;
-        const day = req.query.day ;
-        let hasCheckedIn ;
-        const firstCheckIn = await User.isTodayCheckIn(user_id, year, month, day) ;
-        if (firstCheckIn){
-            const continueDay = await User.lastDayCon(user_id, year, month, day) ;
-            console.log(continueDay) ;
-            var checkInResult = await User.checkIn(user_id, year, month, day, continueDay) ;
-            var reward = await User.reward(user_id, continueDay) ;
-            hasCheckedIn = false ;
-        }else{
-            hasCheckedIn = true ;
+    try {
+        const user_id = req.query.user_id;
+        const year = req.query.year;
+        const month = req.query.month;
+        const day = req.query.day;
+        let hasCheckedIn;
+        let continueDay;
+        const firstCheckIn = await User.isTodayCheckIn(user_id, year, month, day);
+        if (firstCheckIn) {
+            continueDay = await User.lastDayCon(user_id, year, month, day);
+            console.log(continueDay);
+            var checkInResult = await User.checkIn(user_id, year, month, day, continueDay);
+            var reward = await User.reward(user_id, continueDay);
+            hasCheckedIn = false;
+        } else {
+            hasCheckedIn = true;
         }
         res.status(200).json({
-            user_id : user_id,
-            hasCheckedIn : hasCheckedIn,
-            dates : checkInResult,
-            reward : reward,
-            continueDay : continueDay
-        }) ;
-        
-    }catch(error){
-        return { error } ;
+            user_id: user_id,
+            hasCheckedIn: hasCheckedIn,
+            dates: checkInResult,
+            reward: reward,
+            continueDay: continueDay,
+        });
+    } catch (error) {
+        return { error };
     }
-} ;
-
+};
 
 const logout = async (req, res) => {
-    const id = 10240 ;
-    try{
-        const lastLogin = await User.findLastLogin(id) ;
-        User.logout(lastLogin.id) ;
-        res.status(200).json({}) ;
-    }catch(error){
-        return { error } ;
+    const id = 10240;
+    try {
+        const lastLogin = await User.findLastLogin(id);
+        User.logout(lastLogin.id);
+        res.status(200).json({});
+    } catch (error) {
+        return { error };
     }
-    
 };
 
 const favorite = async (req, res) => {
-    const product_id = req.body.product_id ;
-    const user_id = req.body.user_id ;
-    try{
-        const result = await User.favorite(user_id, product_id) ;
+    const product_id = req.body.product_id;
+    const user_id = req.body.user_id;
+    try {
+        const result = await User.favorite(user_id, product_id);
         res.status(200).json({
-            user_id : user_id,
-            product_id : product_id,
-            favorited : true
-        }) ;
-    }catch(error){
-        return { error } ;
+            user_id: user_id,
+            product_id: product_id,
+            favorited: true,
+        });
+    } catch (error) {
+        return { error };
     }
-}
+};
 
 const deleteFavorite = async (req, res) => {
-    const product_id = req.body.product_id ;
-    const user_id = req.body.user_id ;
-    try{
-        await User.deleteFavorite(user_id, product_id) ;
+    const product_id = req.body.product_id;
+    const user_id = req.body.user_id;
+    try {
+        await User.deleteFavorite(user_id, product_id);
         res.status(200).json({
-            user_id : user_id,
-            product_id : product_id,
-            favorited : false
-        }) ;
-    }catch(error){
-        return {error} ;
+            user_id: user_id,
+            product_id: product_id,
+            favorited: false,
+        });
+    } catch (error) {
+        return { error };
     }
-} 
+};
 
 const getFavorite = async (req, res) => {
-    const user_id = req.query.user_id ;
-    const product_id = req.query.product_id ;
-    let favorite ;
-    try{
-        const result = await User.getFavorite(user_id, product_id) ;
-        if (result.length === 0){
-            favorite = false ;
-        }else{
-            favorite = true ;
+    const user_id = req.query.user_id;
+    const product_id = req.query.product_id;
+    let favorite;
+    try {
+        const result = await User.getFavorite(user_id, product_id);
+        if (result.length === 0) {
+            favorite = false;
+        } else {
+            favorite = true;
         }
         res.status(200).json({
-            user_id : user_id,
-            product_id : product_id,
-            favorited : favorite
-        }) ;
-        return ;
-    }catch(error){
-        return {error} ;
+            user_id: user_id,
+            product_id: product_id,
+            favorited: favorite,
+        });
+        return;
+    } catch (error) {
+        return { error };
     }
-}
+};
 
 const healthCheck = async (req, res) => {
-    res.status(200).json({ok:"OK"}) ;
-}
-
+    res.status(200).json({ ok: 'OK' });
+};
 
 const facebookSignIn = async (accessToken) => {
     if (!accessToken) {
@@ -248,44 +244,44 @@ const getUserProfile = async (req, res) => {
     return;
 };
 
-const checkReward = async(req, res) => {
-    const user_id = req.query.user_id ;
-    try{
-        const results = await User.checkReward(user_id) ;
+const checkReward = async (req, res) => {
+    const user_id = req.query.user_id;
+    try {
+        const results = await User.checkReward(user_id);
         res.status(200).json({
-            user_id : user_id,
-            reward : results
-        }) ;
-    }catch(error){
+            user_id: user_id,
+            reward: results,
+        });
+    } catch (error) {
         return { error: error };
     }
-} ;
+};
 
 const reward = async (req, res) => {
-    const {user_id, reward_id} = req.body ;
-    try{
-        const result = await User.reward(user_id, reward_id) ;
+    const { user_id, reward_id } = req.body;
+    try {
+        const result = await User.reward(user_id, reward_id);
         res.status(200).json({
-            user_id : user_id,
-            reward : result
-        }) ;
-    }catch(error){
-        return {error : error} ;
+            user_id: user_id,
+            reward: result,
+        });
+    } catch (error) {
+        return { error: error };
     }
-} ;
+};
 
 const useReward = async (req, res) => {
-    const {user_id, rewardrecord_id} = req.body ;
-    try{
-        const result = await User.useReward(user_id, rewardrecord_id) ;
+    const { user_id, rewardrecord_id } = req.body;
+    try {
+        const result = await User.useReward(user_id, rewardrecord_id);
         res.status(200).json({
-            user_id : user_id,
-            reward : result
-        }) ;
-    }catch(error){
-        return {error : error} ;
+            user_id: user_id,
+            reward: result,
+        });
+    } catch (error) {
+        return { error: error };
     }
-}
+};
 
 module.exports = {
     signUp,
@@ -300,5 +296,5 @@ module.exports = {
     getUserProfile,
     checkReward,
     useReward,
-    reward
+    reward,
 };

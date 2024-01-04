@@ -8,7 +8,7 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { useUser } from "../../../contexts/UserContext";
 import { backendurl } from "../../../constants/urls";
 import { IoChatbubbleEllipsesSharp } from "react-icons/io5";
-import { useParams } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 
 export default function ProductDetail({ product }: { product: Product }) {
   const { user } = useUser();
@@ -118,15 +118,15 @@ export default function ProductDetail({ product }: { product: Product }) {
   // }, [product.id]);
 
   // // 示例：更新收藏状态
-  const toggleFavorite = async () => {
-    // const userId = /* 获取 userId */;
-    // if (isFavorited) {
-    //   await deleteFavorite(userId, product.id);
-    // } else {
-    //   await addFavorite(userId, product.id);
-    // }
-    // setIsFavorited(!isFavorited);
-  };
+  // const toggleFavorite = async () => {
+  //   // const userId = /* 获取 userId */;
+  //   // if (isFavorited) {
+  //   //   await deleteFavorite(userId, product.id);
+  //   // } else {
+  //   //   await addFavorite(userId, product.id);
+  //   // }
+  //   // setIsFavorited(!isFavorited);
+  // };
 
   useEffect(() => {
     if (product.variants) {
@@ -166,25 +166,29 @@ export default function ProductDetail({ product }: { product: Product }) {
     if (!user || !product) return;
 
     const getRecommendProducts = async () => {
+      console.log("user id is", user.id);
+
       const response = await fetch(
         `${backendurl}/api/1.0/products/slopeone?user_id=${user.id}&product_id=${product.id}`
       );
       const data = await response.json();
 
-      setRecommendProducts(data);
+      // 取前3個
+      setRecommendProducts(data.data.slice(0, 3));
     };
 
     getRecommendProducts();
   }, [user, product]);
 
   useEffect(() => {
-    if (recommendProducts.length == 0) return;
+    if (recommendProducts.length == 0 || recommendProductsDetail.length > 0)
+      return;
 
     const getRecommendProductsDetail = async () => {
       setRecommendProductsDetail([]);
       for (let i = 0; i < recommendProducts.length; i++) {
         const response = await fetch(
-          `${backendurl}/api/1.0/products/${recommendProducts[i]}`
+          `${backendurl}/api/1.0/products/details?id=${recommendProducts[i].product_id}`
         );
         const data = await response.json();
         console.log("dataaaaaaaaaa", data);
@@ -263,7 +267,7 @@ export default function ProductDetail({ product }: { product: Product }) {
                         <IoChatbubbleEllipsesSharp />
 
                         <div
-                          className="ml-1"
+                          className="ml-1 text-sm"
                           onClick={() => {
                             const payload = {
                               room: {
@@ -286,12 +290,12 @@ export default function ProductDetail({ product }: { product: Product }) {
                               .then((res) => res.json())
                               .then((res) => {
                                 console.log("res", res);
-                                setMessageOpen(!messageOpen);
+                                if (!messageOpen) setMessageOpen(true);
                                 setMessageCurrentRoom(res.roomId);
                               });
                           }}
                         >
-                          聯絡客服
+                          客服
                         </div>
                       </button>
                     </div>
@@ -663,17 +667,27 @@ export default function ProductDetail({ product }: { product: Product }) {
         messageOpen={messageOpen}
         messageCurrentRoom={messageCurrentRoom}
       />
-      <div className="fixed w-80 top-40 right-12">
-        你可能會喜歡的商品
+      <div className="fixed z-10 top-40 right-20 ">
+        <div className="font-bold">你可能會喜歡的商品</div>
+
         {recommendProductsDetail.length > 0 &&
           recommendProductsDetail.map((product) => (
-            <div className="flex items-center justify-between p-2 mt-12">
-              <div className="flex items-center">
+            <Link
+              className="flex items-center p-2 mt-2 mb-8 transition duration-300 hover:opacity-50"
+              key={product.id}
+              to={`/products/${product.data.id}`}
+              target="_blank"
+            >
+              <div className="flex-col items-center w-20 overflow-hidden rounded-xl">
                 <img src={product.data.main_image} className="w-20" alt="" />
-                <div className="ml-2">{product.data.title}</div>
               </div>
-              <div className="text-lg font-bold">TWD.{product.data.price}</div>
-            </div>
+              <div className="flex-col justify-center ml-5">
+                <div className="">{product.data.title}</div>
+                <div className="text-lg font-bold">
+                  <div>TWD.{product.data.price}</div>
+                </div>
+              </div>
+            </Link>
           ))}
       </div>
     </>

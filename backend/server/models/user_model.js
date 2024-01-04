@@ -6,7 +6,6 @@ const salt = parseInt(process.env.BCRYPT_SALT);
 const { TOKEN_EXPIRE, TOKEN_SECRET } = process.env; // 30 days by seconds
 const jwt = require('jsonwebtoken');
 
-
 const USER_ROLE = {
     ALL: -1,
     ADMIN: 1,
@@ -105,31 +104,31 @@ const nativeSignIn = async (email, password) => {
 
 const reward = async (user_id, reward_id) => {
     const conn = await pool.getConnection();
-    try{
+    try {
         await conn.query('START TRANSACTION');
-        const queryStr1 = 'INSERT INTO rewardrecord (user_id, reward_id, used) VALUES (?, ?, 0) ;' ;
-        await conn.query(queryStr1, [user_id, reward_id]) ;
+        const queryStr1 = 'INSERT INTO rewardrecord (user_id, reward_id, used) VALUES (?, ?, 0) ;';
+        await conn.query(queryStr1, [user_id, reward_id]);
 
         const queryStr2 = `
             SELECT 
             id AS reward_id, title, description, value 
             FROM reward 
-            WHERE id = ? ;` ;
-        const rewardDetail = await conn.query(queryStr2, [reward_id]) ;
+            WHERE id = ? ;`;
+        const rewardDetail = await conn.query(queryStr2, [reward_id]);
 
         await conn.query('COMMIT');
-        return rewardDetail[0] ;
-    }catch (error){
+        return rewardDetail[0];
+    } catch (error) {
         await conn.query('ROLLBACK');
-        return {error};
-    }finally {
+        return { error };
+    } finally {
         await conn.release();
     }
-} ;
+};
 
 const checkReward = async (user_id) => {
     const conn = await pool.getConnection();
-    try{
+    try {
         await conn.query('START TRANSACTION');
 
         const queryStr = `
@@ -139,183 +138,181 @@ const checkReward = async (user_id) => {
             reward.description, reward.value
             FROM rewardrecord 
             JOIN reward ON rewardrecord.reward_id = reward.id
-            WHERE rewardrecord.user_id = ? AND rewardrecord.used = 0` ;
-        const results = await conn.query(queryStr, [user_id]) ;
+            WHERE rewardrecord.user_id = ? AND rewardrecord.used = 0`;
+        const results = await conn.query(queryStr, [user_id]);
 
         await conn.query('COMMIT');
-        return results[0] ;
+        return results[0];
     } catch (error) {
         await conn.query('ROLLBACK');
-        return {error};
+        return { error };
     } finally {
         await conn.release();
     }
-} ;
+};
 
 const useReward = async (user_id, rewardrecord_id) => {
     const conn = await pool.getConnection();
-    try{
+    try {
         await conn.query('START TRANSACTION');
-        const queryStr1 = 'UPDATE rewardrecord SET used = 1 WHERE user_id = ? AND id = ? ;' ;
-        await conn.query(queryStr1, [user_id, rewardrecord_id]) ;
+        const queryStr1 = 'UPDATE rewardrecord SET used = 1 WHERE user_id = ? AND id = ? ;';
+        await conn.query(queryStr1, [user_id, rewardrecord_id]);
 
         const queryStr2 = `
             SELECT 
             id AS rewardrecord_id, reward_id, used
             FROM rewardrecord 
-            WHERE id = ? ;` ;
-        const rewardDetail = await conn.query(queryStr2, [rewardrecord_id]) ;
+            WHERE id = ? ;`;
+        const rewardDetail = await conn.query(queryStr2, [rewardrecord_id]);
 
         await conn.query('COMMIT');
-        return rewardDetail[0] ;
-    }catch (error){
+        return rewardDetail[0];
+    } catch (error) {
         await conn.query('ROLLBACK');
-        return {error};
-    }finally {
+        return { error };
+    } finally {
         await conn.release();
     }
-} ;
+};
 
 const isTodayCheckIn = async (user_id, year, month, day) => {
     const conn = await pool.getConnection();
-    try{
+    try {
         await conn.query('START TRANSACTION');
-        
+
         const queryStr = 'SELECT * FROM checkin WHERE user_id = ? AND year = ? AND month = ? AND day = ? ;';
         const results = await conn.query(queryStr, [user_id, year, month, day]);
         await conn.query('COMMIT');
-        if (results[0].length === 0){
-            return true ;
-        }else{
+        if (results[0].length === 0) {
+            return true;
+        } else {
             return false;
         }
-
-    }catch (error){
+    } catch (error) {
         await conn.query('ROLLBACK');
-        return {error};
-    }finally {
+        return { error };
+    } finally {
         await conn.release();
     }
-}
+};
 
 function checkContinuity(year1, month1, day1, year2, month2, day2) {
-    console.log(`${year1}-${month1}-${day1}`, `${year2}-${month2}-${day2}`) ;
-      const currentDate = new Date(year1, month1-1, day1);
-      const prevDate = new Date(year2, month2-1, day2);
-      const timeDiff = currentDate.getTime() - prevDate.getTime();
-      const oneDay = 24 * 60 * 60 * 1000; 
-      if (timeDiff !== oneDay) {
-        return false ;
-      }
-      return true ;
+    console.log(`${year1}-${month1}-${day1}`, `${year2}-${month2}-${day2}`);
+    const currentDate = new Date(year1, month1 - 1, day1);
+    const prevDate = new Date(year2, month2 - 1, day2);
+    const timeDiff = currentDate.getTime() - prevDate.getTime();
+    const oneDay = 24 * 60 * 60 * 1000;
+    if (timeDiff !== oneDay) {
+        return false;
+    }
+    return true;
 }
 
 const lastDayCon = async (user_id, year, month, day) => {
     const conn = await pool.getConnection();
-    const queryStr = 'SELECT * FROM checkin WHERE user_id = ? ORDER BY year DESC, month DESC, day DESC LIMIT 1 ;' ;
-    const results = await conn.query(queryStr, [user_id]) ;
-    if(results[0].length !== 0 && checkContinuity(year, month, day, results[0][0].year, results[0][0].month, results[0][0].day)){
-        if(results[0][0].conday >= 6){
-            return 0 ;
-        }else{
-            return results[0][0].conday+1 ;
+    const queryStr = 'SELECT * FROM checkin WHERE user_id = ? ORDER BY year DESC, month DESC, day DESC LIMIT 1 ;';
+    const results = await conn.query(queryStr, [user_id]);
+    if (results[0].length !== 0 && checkContinuity(year, month, day, results[0][0].year, results[0][0].month, results[0][0].day)) {
+        if (results[0][0].conday >= 6) {
+            return 0;
+        } else {
+            return results[0][0].conday + 1;
         }
     }
-    return 1 ;
-}
+    conn.release();
+    return 1;
+};
 
 const checkIn = async (user_id, year, month, day, cont) => {
     const conn = await pool.getConnection();
-    try{
+    try {
         await conn.query('START TRANSACTION');
         const queryStr1 = 'INSERT IGNORE checkin (user_id, year, month, day, conday) VALUES (?, ?, ?, ?, ?)';
         await conn.query(queryStr1, [user_id, year, month, day, cont]);
 
-        const queryStr2 = 'SELECT year, month, day FROM checkin WHERE user_id = ? AND year = ? AND month = ? ;' ;
-        const results = await conn.query(queryStr2, [user_id, year, month]) ;
+        const queryStr2 = 'SELECT year, month, day FROM checkin WHERE user_id = ? AND year = ? AND month = ? ;';
+        const results = await conn.query(queryStr2, [user_id, year, month]);
 
         await conn.query('COMMIT');
 
         return results[0];
-
-    }catch (error){
+    } catch (error) {
         await conn.query('ROLLBACK');
-        return {error};
-    }finally {
+        return { error };
+    } finally {
         await conn.release();
     }
-} ;
+};
 
 const logout = async (row_id) => {
     const conn = await pool.getConnection();
-    try{
+    try {
         await conn.query('START TRANSACTION');
         const logoutAt = new Date();
-        const queryStr1 = 'SELECT login_at FROM checkin WHERE id = ?;' ;
+        const queryStr1 = 'SELECT login_at FROM checkin WHERE id = ?;';
         const loginAt = await conn.query(queryStr1, [row_id]);
-        const timeDiff = (new Date(logoutAt) - new Date(loginAt[0][0].login_at))/1000 ;
-        const queryStr2 = 'UPDATE checkin SET period = ? WHERE id = ? ;' ;
+        const timeDiff = (new Date(logoutAt) - new Date(loginAt[0][0].login_at)) / 1000;
+        const queryStr2 = 'UPDATE checkin SET period = ? WHERE id = ? ;';
         await conn.query(queryStr2, [timeDiff, row_id]);
-        console.log("logout") ;
+        console.log('logout');
         await conn.query('COMMIT');
         return true;
-
-    }catch (error){
+    } catch (error) {
         await conn.query('ROLLBACK');
-        return {error};
-    }finally {
-        await conn.release();
-    }
-}
-
-const favorite = async (user_id, product_id)  => {
-    const conn = await pool.getConnection();
-    try{
-        await conn.query('START TRANSACTION');
-        const queryStr = 'INSERT IGNORE favorite (user_id, product_id) VALUES (?,?) ;' ;
-        await conn.query(queryStr, [user_id, product_id]) ;
-        await conn.query('COMMIT');
-        return  true;
-    }catch (error) {
-        console.log(error) ;
-        await conn.query('ROLLBACK');
-        return {error};
+        return { error };
     } finally {
         await conn.release();
     }
-}
+};
 
-const deleteFavorite = async (user_id, product_id)  => {
+const favorite = async (user_id, product_id) => {
     const conn = await pool.getConnection();
-    try{
+    try {
         await conn.query('START TRANSACTION');
-        const queryStr = 'DELETE FROM favorite WHERE user_id=? AND product_id=? ;' ;
-        await conn.query(queryStr, [user_id, product_id]) ;
+        const queryStr = 'INSERT IGNORE favorite (user_id, product_id) VALUES (?,?) ;';
+        await conn.query(queryStr, [user_id, product_id]);
         await conn.query('COMMIT');
-        return true ;
-    }catch (error) {
+        return true;
+    } catch (error) {
+        console.log(error);
         await conn.query('ROLLBACK');
-        return {error};
+        return { error };
     } finally {
         await conn.release();
     }
-}
+};
+
+const deleteFavorite = async (user_id, product_id) => {
+    const conn = await pool.getConnection();
+    try {
+        await conn.query('START TRANSACTION');
+        const queryStr = 'DELETE FROM favorite WHERE user_id=? AND product_id=? ;';
+        await conn.query(queryStr, [user_id, product_id]);
+        await conn.query('COMMIT');
+        return true;
+    } catch (error) {
+        await conn.query('ROLLBACK');
+        return { error };
+    } finally {
+        await conn.release();
+    }
+};
 
 const getFavorite = async (user_id, product_id) => {
     const conn = await pool.getConnection();
-    try{
+    try {
         await conn.query('START TRANSACTION');
-        const queryStr = 'SELECT * FROM favorite WHERE user_id = ? AND product_id = ? ;' ;
-        const results = await conn.query(queryStr, [user_id, product_id]) ;
+        const queryStr = 'SELECT * FROM favorite WHERE user_id = ? AND product_id = ? ;';
+        const results = await conn.query(queryStr, [user_id, product_id]);
         await conn.query('COMMIT');
-        return results[0] ;
-    }catch (error) {
+        return results[0];
+    } catch (error) {
         await conn.query('ROLLBACK');
-        return {error};
+        return { error };
     } finally {
         await conn.release();
     }
-}
+};
 
 const facebookSignIn = async (id, roleId, name, email) => {
     const conn = await pool.getConnection();
@@ -420,7 +417,5 @@ module.exports = {
     deleteFavorite,
     reward,
     checkReward,
-    useReward
+    useReward,
 };
-
-

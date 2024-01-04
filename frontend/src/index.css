@@ -24,6 +24,7 @@
 
 ::-webkit-scrollbar {
   width: 8px; /* 滾動條寬度 */
+  height: 8px; /* 滾動條高度 */
 }
 
 /* 更改滾動條軌道的背景色 */

@@ -12,6 +12,8 @@ import { BsEmojiSmile } from "react-icons/bs";
 import { IoChatbox } from "react-icons/io5";
 import { RxCross1 } from "react-icons/rx";
 
+import { EmojiKeyboard } from "reactjs-emoji-keyboard";
+
 import Button from "@mui/material/Button";
 
 import { generateTimestamp, getTimeDiff } from "../../../utils/tools";
@@ -48,6 +50,7 @@ export default function MessageBox({
   const [update, setUpdate] = useState(false);
 
   const [openImageDialog, setOpenImageDialog] = useState(false);
+  const [openEmojiKeyboard, setOpenEmojiKeyboard] = useState(false);
 
   const handleCloseImageDialog = () => {
     setOpenImageDialog(false);
@@ -166,7 +169,7 @@ export default function MessageBox({
   }, [messageCurrentRoom]);
 
   useEffect(() => {
-    // if (!messageOpen) return;
+    if (!messageOpen) return;
     if (!active) setActive(true);
   }, [messageOpen]);
 
@@ -227,7 +230,7 @@ export default function MessageBox({
     if (!currentProductId) return;
     setCurrentProductDetail(null);
 
-    fetch(`${backendurl}/api/1.0/products/${currentProductId}`, {
+    fetch(`${backendurl}/api/1.0/products/details?id=${currentProductId}`, {
       method: "GET",
     })
       .then((resp) => resp.json())
@@ -282,7 +285,7 @@ export default function MessageBox({
   return (
     <>
       {active ? (
-        <div className="fixed flex flex-col w-1/3 bg-gray-200 rounded-lg bottom-6 right-3 shadow-3xl h-1/2">
+        <div className="fixed z-40 flex flex-col w-1/3 bg-gray-200 rounded-lg bottom-6 right-3 shadow-3xl h-1/2">
           <div
             className="w-full cursor-pointer h-1/6"
             onClick={() => {
@@ -300,7 +303,7 @@ export default function MessageBox({
             <div className="flex-col w-1/3 overflow-y-scroll">
               {rooms &&
                 rooms.map((room) => (
-                  <div key={room.id}>
+                  <div key={room.id} className="cursor-pointer">
                     <div
                       className={
                         "flex items-center w-full h-20 p-3" +
@@ -328,9 +331,7 @@ export default function MessageBox({
             </div>
             <div className="w-2/3 h-full bg-white">
               <div
-                className={
-                  "overflow-y-scroll h-5/6" + (image ? " h-2/3" : " h-5/6")
-                }
+                className={"overflow-y-scroll" + (image ? " h-2/3" : " h-5/6")}
                 ref={scrollRef}
               >
                 <div className="flex-col items-center justify-center w-full p-3">
@@ -368,33 +369,33 @@ export default function MessageBox({
                     >
                       {message.sender_id === user.id && (
                         <div className="flex-col">
-                          {message.message_image && (
-                            <div className="overflow-hidden max-h-[200px] max-w-[200px] rounded-xl mb-1">
+                          {message.message_image ? (
+                            <div className="px-3 py-4 mb-1 mr-2 overflow-hidden bg-gray-200 rounded-xl">
                               <img
-                                className="object-cover w-full h-full cursor-pointer"
+                                className="object-cover  mb-3 rounded-xl max-w-[200px] max-h-[200px] h-full cursor-pointer"
                                 src={message.message_image}
                                 onClick={() => {
                                   setSelectedImage(message.message_image);
                                   setOpenImageDialog(true);
                                 }}
                               ></img>
+                              <div>{message.message_content}</div>
                             </div>
-                          )}
-                          <div className="flex flex-col justify-end">
-                            <div>
-                              <div className="flex w-full">
-                                <div className="w-full"></div>
-                                <div className="flex items-center justify-end flex-1 px-5 mr-2 text-black bg-gray-200 text-l h-14 rounded-2xl">
-                                  <div>{message.message_content}</div>
+                          ) : (
+                            <div className="flex flex-col justify-end">
+                              <div className="break-words px-5 mr-2 text-black bg-gray-200 text-l py-4 rounded-2xl max-w-[200px] max-h-[600px]">
+                                <div className="">
+                                  {message.message_content}
+                                </div>
+                              </div>
+
+                              <div className="flex justify-end w-full">
+                                <div className="mt-2 text-xs">
+                                  {getTimeDiff(message.timestamp)}
                                 </div>
                               </div>
                             </div>
-                            <div className="flex justify-end w-full">
-                              <div className="mt-2 text-xs">
-                                {getTimeDiff(message.timestamp)}
-                              </div>
-                            </div>
-                          </div>
+                          )}
                         </div>
                       )}
 
@@ -451,7 +452,7 @@ export default function MessageBox({
                 </div>
               )}
 
-              <div className="flex flex-col border-t border-gray-300 h-1/6">
+              <div className="flex flex-col justify-center border-t border-gray-300 h-1/6">
                 <div className="flex items-center">
                   <button
                     className="flex w-8 h-8"
@@ -459,8 +460,31 @@ export default function MessageBox({
                   >
                     <CiImageOn className="w-8 h-8 ml-2" />
                   </button>
+                  <button
+                    className="flex justify-center w-5 h-5 mx-2"
+                    onClick={() => {
+                      setOpenEmojiKeyboard(!openEmojiKeyboard);
+                    }}
+                  >
+                    <BsEmojiSmile className="w-5 h-5" />
+                  </button>
 
-                  <BsEmojiSmile className="w-6 h-6 ml-2" />
+                  {openEmojiKeyboard && (
+                    <div className="absolute right-20 bottom-16">
+                      <EmojiKeyboard
+                        height={250}
+                        width={300}
+                        theme="light"
+                        searchLabel="Procurar emoji"
+                        searchDisabled={false}
+                        onEmojiSelect={(emoji) => {
+                          setUserMessage(userMessage + emoji.character);
+                        }}
+                        categoryDisabled={false}
+                      />
+                    </div>
+                  )}
+
                   <input
                     type="text"
                     value={userMessage}

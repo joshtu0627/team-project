@@ -68,13 +68,18 @@ function ServerDay(
 export default function Calendar({
   dates,
   setHasLoggedIn,
+  todayReward,
+  continueDay,
 }: {
   dates: any;
   setHasLoggedIn: any;
+  todayReward: any;
+  continueDay: any;
 }) {
   const requestAbortController = React.useRef<AbortController | null>(null);
   const [isLoading, setIsLoading] = React.useState(false);
   const [highlightedDays, setHighlightedDays] = React.useState();
+  const [couponName, setCouponName] = React.useState("");
   React.useEffect(() => {
     if (!dates) return;
     let daysToHighlight: number[] = [];
@@ -85,6 +90,13 @@ export default function Calendar({
 
     setHighlightedDays(daysToHighlight);
   }, [dates]);
+
+  React.useEffect(() => {
+    if (!todayReward) return;
+    console.log("todayReward value", todayReward[0].value);
+
+    setCouponName(`${todayReward[0].value}.png`);
+  }, [todayReward]);
   // const fetchHighlightedDays = (date: Dayjs) => {
   //   const controller = new AbortController();
   //   fakeFetch(date, {
@@ -136,8 +148,27 @@ export default function Calendar({
         // 模糊效果
       }}
     >
+      {todayReward && couponName && (
+        <div
+          className="fixed text-2xl text-white"
+          style={{
+            fontFamily: "sans-serif",
+            right: "-15%",
+            top: "16%",
+            rotate: "8deg",
+          }}
+        >
+          <div className="mb-3 glow-effect">
+            <img
+              src={`/assets/images/coupons/${couponName}`}
+              className="w-72"
+              alt=""
+            />
+          </div>
+        </div>
+      )}
       <div className="flex">
-        <div className="relative w-full mb-32 overflow-hidden font-normal text-white text-8xl animate-scale-width">
+        <div className="relative w-full mb-40 overflow-hidden font-normal text-white text-8xl animate-scale-width">
           <span style={{ whiteSpace: "nowrap" }}>Daily Check In</span>
         </div>{" "}
         <button
@@ -234,6 +265,21 @@ export default function Calendar({
           className="rounded-3xl"
         />
       </LocalizationProvider>
+      <div
+        className="fixed z-50 flex flex-col items-center justify-center w-full text-xl text-3xl text-black"
+        style={{
+          fontFamily: "sans-serif",
+          top: "98%",
+        }}
+      >
+        <div className="mb-2">
+          連續登入 <span className="text-3xl">{continueDay}</span> 天
+        </div>
+
+        <div>
+          獲得 <span className="text-3xl">{todayReward[0].value}</span> 元折價券
+        </div>
+      </div>{" "}
     </div>
     // </ThemeProvider>
   );

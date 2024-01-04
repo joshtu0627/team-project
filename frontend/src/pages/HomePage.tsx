@@ -20,6 +20,8 @@ export default function HomePage() {
   const [selectInfo, setSelectInfo] = useState<SelectInfo>([0, ""]);
   const [hasLoggedIn, setHasLoggedIn] = useState(true);
   const [dates, setDates] = useState([]);
+  const [todayReward, setTodayReward] = useState(null);
+  const [continueDay, setContinueDay] = useState(null);
 
   const { category } = useParams();
   const navigate = useNavigate();
@@ -67,6 +69,8 @@ export default function HomePage() {
           console.log(data.dates);
 
           setDates(data.dates);
+          setContinueDay(data.continueDay);
+          setTodayReward(data.reward);
         }
       });
   }, [user]);
@@ -85,7 +89,12 @@ export default function HomePage() {
       <Footer />
       {!hasLoggedIn && (
         <>
-          <Calendar dates={dates} setHasLoggedIn={setHasLoggedIn} />
+          <Calendar
+            dates={dates}
+            setHasLoggedIn={setHasLoggedIn}
+            todayReward={todayReward}
+            continueDay={continueDay}
+          />
           <div className="fixed top-0 left-0 z-50 w-screen h-screen bg-gray-700 bg-opacity-50 backdrop-filter backdrop-blur"></div>
         </>
       )}
