@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 
 import MessageBox from "../../common/MessageBox";
-
 import Product from "../../../types/Product";
 import useWindowWidth from "../../../hooks/useWindowWidth";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
@@ -42,7 +41,6 @@ export default function ProductDetail({ product }: { product: Product }) {
       ? `${backendurl}/api/1.0/user/deleteFavorite`
       : `${backendurl}/api/1.0/user/favorite`;
 
-    // 發送 API 請求
     fetch(url, {
       method: "POST",
       headers: {
@@ -105,28 +103,6 @@ export default function ProductDetail({ product }: { product: Product }) {
     console.log("id is", user?.id);
     console.log("product  is", productId);
   }, [user?.id, productId]);
-
-  // 示例：获取初始收藏状态
-  // useEffect(() => {
-  //   const fetchFavoriteStatus = async () => {
-  //     const userId = /* 获取 userId */;
-  //     const response = await checkFavoriteStatus(userId, product.id);
-  //     setIsFavorited(response.favorited);
-  //   };
-
-  //   fetchFavoriteStatus();
-  // }, [product.id]);
-
-  // // 示例：更新收藏状态
-  // const toggleFavorite = async () => {
-  //   // const userId = /* 获取 userId */;
-  //   // if (isFavorited) {
-  //   //   await deleteFavorite(userId, product.id);
-  //   // } else {
-  //   //   await addFavorite(userId, product.id);
-  //   // }
-  //   // setIsFavorited(!isFavorited);
-  // };
 
   useEffect(() => {
     if (product.variants) {
