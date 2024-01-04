@@ -314,6 +314,22 @@ const getFavorite = async (user_id, product_id) => {
     }
 };
 
+const getFavoriteList = async (user_id) => {
+    const conn = await pool.getConnection();
+    try {
+        await conn.query('START TRANSACTION');
+        const queryStr = `SELECT product_id FROM favorite WHERE user_id = ? ;`;
+        const results = await conn.query(queryStr, [user_id]);
+        await conn.query('COMMIT');
+        return results[0];
+    } catch (error) {
+        await conn.query('ROLLBACK');
+        return { error };
+    } finally {
+        await conn.release();
+    }
+};
+
 const facebookSignIn = async (id, roleId, name, email) => {
     const conn = await pool.getConnection();
     try {
@@ -409,6 +425,7 @@ module.exports = {
     logout,
     favorite,
     getFavorite,
+    getFavoriteList,
     nativeSignIn,
     facebookSignIn,
     getUserDetail,

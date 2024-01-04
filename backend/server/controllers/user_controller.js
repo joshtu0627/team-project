@@ -166,6 +166,20 @@ const getFavorite = async (req, res) => {
     }
 };
 
+const getFavoriteList = async (req, res) => {
+    const user_id = req.query.user_id;
+    try {
+        const result = await User.getFavoriteList(user_id);
+        res.status(200).json({
+            user_id: user_id,
+            favoriteList: result,
+        });
+        return;
+    } catch (error) {
+        return { error };
+    }
+};
+
 const healthCheck = async (req, res) => {
     res.status(200).json({ ok: 'OK' });
 };
@@ -291,6 +305,7 @@ module.exports = {
     favorite,
     deleteFavorite,
     getFavorite,
+    getFavoriteList,
     healthCheck,
     signIn,
     getUserProfile,

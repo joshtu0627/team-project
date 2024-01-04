@@ -568,7 +568,9 @@ export default function CartPage() {
                                 >
                                   <div className="justify-center">
                                     <div className="mb-2 text-sm">
-                                      登入優惠券
+                                      {coupon.value === "Unexpected Windfall"
+                                        ? "直播獎勵"
+                                        : "登入優惠券"}
                                     </div>
                                   </div>
                                   <div className="flex flex-col items-center justify-center w-4/5">
