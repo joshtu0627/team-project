@@ -2,8 +2,10 @@ require('dotenv').config();
 const Story = require('../models/story_model');
 
 const createStory = async (req, res) => {
-    const { picUrl, purchaseUrl, createTime } = req.body;
-    const { story, error } = await Story.createStory(picUrl, purchaseUrl, createTime);
+    console.log('createStory', req.body);
+    const { picUrl, purchase_url, create_time } = req.body;
+    console.log('createStory12345', picUrl, purchase_url, create_time);
+    const { story, error } = await Story.createStory(picUrl, purchase_url, create_time);
     if (error) {
         return res.status(400).json({ error });
     }
@@ -16,9 +18,9 @@ const showStory = async (req, res) => {
         return res.status(400).json({ error });
     }
     return res.status(200).json(stories);
-}
+};
 
 module.exports = {
     createStory,
-    showStory
+    showStory,
 };

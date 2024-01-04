@@ -26,6 +26,7 @@ const ButtonContainer = styled.div`
   align-items: center;
   margin-bottom: auto;
   z-index: 1;
+  width: 100%;
 `;
 
 const InputUrlAndSavePicButton = styled.button`
@@ -327,7 +328,6 @@ export default function EditStory({ storyPicOrVideo }) {
     );
     const { picUrl } = await res.json();
     console.log(picUrl);
-    //這邊要存到資料庫還有跳回上一頁
 
     const postDatares = await postData(picUrl, url);
     console.log(postDatares);

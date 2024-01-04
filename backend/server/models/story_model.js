@@ -1,50 +1,66 @@
 require('dotenv').config();
+const mysqlPromise = require('mysql2/promise');
 
-const createStory = async (picUrl, purchaseUrl, createTime) => {
-    const conn = await pool.getConnection();
+const dbPromise = mysqlPromise.createPool(
+    {
+        host: process.env.DB_HOST,
+        user: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+        database: process.env.DB_DATABASE,
+    },
+    (err) => {
+        if (err) {
+            console.error('Database connection error:', err);
+        } else {
+            console.log('Database connected successfully');
+        }
+    }
+);
+
+const createStory = async (picUrl, purchase_url, create_time) => {
+    console.log('createStory', picUrl, purchase_url, create_time);
     try {
-        await conn.query('START TRANSACTION');
+        await dbPromise.query('START TRANSACTION');
         const story = {
             picUrl: picUrl,
-            purchase_url: purchaseUrl,
-            create_time: createTime
+            purchase_url: purchase_url,
+            create_time: create_time,
         };
         const queryStr = 'INSERT INTO story SET ?';
-        const [result] = await conn.query(queryStr, story);
+        const [result] = await dbPromise.query(queryStr, story);
         story.id = result.insertId;
-        await conn.query('COMMIT');
-        return {story};
+        await dbPromise.query('COMMIT');
+        return { story };
     } catch (error) {
         console.log(error);
-        await conn.query('ROLLBACK');
-        return {error};
+        await dbPromise.query('ROLLBACK');
+        return { error };
     } finally {
-        await conn.release();
     }
-}
+};
 
 const showStory = async () => {
-    const conn = await pool.getConnection();
     try {
-        await conn.query('START TRANSACTION');
+        await dbPromise.query('START TRANSACTION');
 
         const oneDayAgo = new Date();
-        oneDayAgo.setDate(oneDayAgo.getDate() - 1);
+        console.log('oneDayAgo', oneDayAgo);
+        oneDayAgo.setDate(oneDayAgo.getDate() - 4);
+        console.log('oneDayAgo1', oneDayAgo);
 
-        const [stories] = await conn.query('SELECT * FROM story WHERE create_time >= ?', [oneDayAgo]);
+        const [stories] = await dbPromise.query('SELECT * FROM story WHERE create_time >= ?', [oneDayAgo]);
 
-        await conn.query('COMMIT');
+        await dbPromise.query('COMMIT');
         return { stories };
     } catch (error) {
         console.log(error);
-        await conn.query('ROLLBACK');
+        await dbPromise.query('ROLLBACK');
         return { error };
     } finally {
-        await conn.release();
     }
-}
+};
 
 module.exports = {
     createStory,
-    showStory
+    showStory,
 };

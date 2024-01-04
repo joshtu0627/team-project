@@ -26,7 +26,7 @@ const IconContainer = styled.div`
   justify-content: space-between;
   width: 100%;
   margin-bottom: auto;
-  z-index: 1;
+  z-index: 5;
 `;
 const Icon = styled.img<{ hasSelectedFile: boolean }>`
   background-color: ${({ hasSelectedFile }) =>
@@ -37,6 +37,7 @@ const Icon = styled.img<{ hasSelectedFile: boolean }>`
   margin: 0.5rem;
   cursor: pointer;
   padding: 2px;
+  z-index: 5;
 `;
 const SettingIcon = styled.img<{ hasSelectedFile: boolean }>`
   background-color: ${({ hasSelectedFile }) =>
@@ -48,6 +49,8 @@ const SettingIcon = styled.img<{ hasSelectedFile: boolean }>`
   margin: 0.5rem;
   cursor: pointer;
   padding: 2px;
+  z-index: 5;
+
 `;
 const SelectedFile = styled.div`
   position: absolute;
@@ -135,6 +138,7 @@ const CreateStory: React.FC = () => {
             src="/assets/images/story-images/x-icon-white.png"
             alt="hi"
             hasSelectedFile={!!selectedFile}
+            onClick={() => window.history.back()}
           />
           <SettingIcon
             src="/assets/images/story-images/setting.png"
@@ -167,7 +171,7 @@ const CreateStory: React.FC = () => {
             ) : (
               <p>Unsupported file type</p>
             )}
-           </SelectedFile>
+          </SelectedFile>
         ) : (
           <FilterAndText>
             <FilterContainer>
@@ -184,7 +188,6 @@ const CreateStory: React.FC = () => {
           </FilterAndText>
         )}
       </Container>
-
     </>
   );
 };
