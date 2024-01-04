@@ -35,4 +35,5 @@ router.route('/user/reward').post(wrapAsync(reward)) ;
 
 router.route('/user/profile').get(authentication(), wrapAsync(getUserProfile));
 
+
 module.exports = router;
