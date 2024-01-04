@@ -7,6 +7,7 @@ import Footer from "../components/common/Footer";
 import { useUser } from "../contexts/UserContext";
 
 import Button from "@mui/material/Button";
+import PaidOrders from "../components/profilepage/PaidOrders";
 
 export default function ProfilePage() {
   const { user, login, logout } = useUser();
@@ -14,7 +15,7 @@ export default function ProfilePage() {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen">
-      <Header />
+      {/* <Header /> */}
       <div className="flex flex-col items-center justify-center w-4/5 h-full">
         <div>名字: {user?.name}</div>
         <div className="mb-5">email: {user?.email}</div>
@@ -28,7 +29,10 @@ export default function ProfilePage() {
         >
           logout
         </Button>
+        <PaidOrders />
       </div>
+      
+      
       <Footer />
     </div>
   );

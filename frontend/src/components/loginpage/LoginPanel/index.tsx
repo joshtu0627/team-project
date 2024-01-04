@@ -12,6 +12,7 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useParams, useNavigate } from "react-router-dom";
+import { setCookie } from 'nookies';
 
 import { useUser } from "../../../contexts/UserContext.tsx";
 import { backendurl } from "../../../constants/urls";
@@ -57,6 +58,11 @@ export default function SignIn() {
       .then((data) => {
         login(data.data.user);
         storage.setItem("token", data.data.access_token);
+<<<<<<< HEAD
+        setCookie(null, 'user_id', data.data.user.id , {path: '/'});
+        login(data.data.user);
+=======
+>>>>>>> 63ab43a2ef407bd6275f59dffb59dff645e9d481
         navigate("/");
       });
   };

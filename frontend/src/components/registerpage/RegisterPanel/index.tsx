@@ -15,6 +15,7 @@ import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { useParams, useNavigate } from "react-router-dom";
 import { backendurl } from "../../../constants/urls";
 import { useUser } from "../../../contexts/UserContext";
+import { setCookie } from 'nookies';
 
 function Copyright(props) {
   return (
@@ -80,6 +81,7 @@ export default function Register() {
       .then((resp) => resp.json())
       .then((data) => {
         storage.setItem("token", data.data.access_token);
+        setCookie(null, 'user_id', data.data.user.id , {path: '/'});
         login(data.data.user);
         navigate("/");
       });

@@ -53,6 +53,10 @@ const nativeSignIn = async (req, res) => {
     }
     try {
         const { user } = await User.nativeSignIn(email, password);
+<<<<<<< HEAD
+        console.log(user);
+=======
+>>>>>>> 63ab43a2ef407bd6275f59dffb59dff645e9d481
 
         res.status(200).send({
             data: {
