@@ -35,7 +35,6 @@ const createStory = async (picUrl, purchase_url, create_time) => {
         console.log(error);
         await dbPromise.query('ROLLBACK');
         return { error };
-    } finally {
     }
 };
 
@@ -56,7 +55,6 @@ const showStory = async () => {
         console.log(error);
         await dbPromise.query('ROLLBACK');
         return { error };
-    } finally {
     }
 };
 
